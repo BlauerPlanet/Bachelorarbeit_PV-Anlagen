@@ -1,4 +1,3 @@
-# als Errorbars statt Boxplots geplottet, da keine Quantile in Daten
 import matplotlib.pyplot as plt
 import pandas as pd
 #DSKM_mL= pd.read_csv("DSKM_mL.txt", sep=";",decimal=",")
@@ -68,13 +67,13 @@ def Kopfdaten(selection):
             plt.figure()
             ax1=plt.subplot(1,3,1)
             plt.title(f"{i} - {selection}", loc="left")
-            plt.boxplot(KPM, labels="M", showmeans=True)
+            plt.boxplot(KPM, labels="M", showmeans=True, meanprops={"marker":"+"})
             ax2=plt.subplot(1,3,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPH, labels="H", showmeans=True)
+            plt.boxplot(KPH, labels="H", showmeans=True, meanprops={"marker":"+"})
             ax3=plt.subplot(1,3,3,sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPS, labels="S", showmeans=True)
+            plt.boxplot(KPS, labels="S", showmeans=True, meanprops={"marker":"+"})
 #            plt.show()
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()
@@ -100,13 +99,13 @@ def Kopfdaten(selection):
             plt.figure()
             ax1=plt.subplot(1,3,1)
             plt.title(f"{i} - {selection}", loc="left")
-            plt.boxplot(KPM, labels="M", showmeans=True)
+            plt.boxplot(KPM, labels="M", showmeans=True, meanprops={"marker":"+"})
             ax2=plt.subplot(1,3,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPH, labels="H", showmeans=True)
+            plt.boxplot(KPH, labels="H", showmeans=True, meanprops={"marker":"+"})
             ax3=plt.subplot(1,3,3, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPS, labels="S", showmeans=True)
+            plt.boxplot(KPS, labels="S", showmeans=True, meanprops={"marker":"+"})
 #            plt.show()
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()            
@@ -132,13 +131,13 @@ def Kopfdaten(selection):
             plt.figure()
             ax1=plt.subplot(1,3,1)
             plt.title(f"{i} - {selection}", loc="left")
-            plt.boxplot(KPM, labels="M", showmeans=True)
+            plt.boxplot(KPM, labels="M", showmeans=True, meanprops={"marker":"+"})
             ax2=plt.subplot(1,3,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPH, labels="H", showmeans=True)
+            plt.boxplot(KPH, labels="H", showmeans=True, meanprops={"marker":"+"})
             ax3=plt.subplot(1,3,3, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPS, labels="S", showmeans=True)
+            plt.boxplot(KPS, labels="S", showmeans=True, meanprops={"marker":"+"})
 #            plt.show()   
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()       
@@ -164,13 +163,13 @@ def Kopfdaten(selection):
             plt.figure()
             ax1=plt.subplot(1,3,1)
             plt.title(f"{i} - M, H & S ", loc="left")
-            plt.boxplot(KPDS, labels="D", showmeans=True)
+            plt.boxplot(KPDS, labels="D", showmeans=True, meanprops={"marker":"+"})
             ax2=plt.subplot(1,3,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPTH, labels="T", showmeans=True)
+            plt.boxplot(KPTH, labels="T", showmeans=True, meanprops={"marker":"+"})
             ax3=plt.subplot(1,3,3, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPZS, labels="Z", showmeans=True)
+            plt.boxplot(KPZS, labels="Z", showmeans=True, meanprops={"marker":"+"})
 #            plt.show()
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()
@@ -180,12 +179,27 @@ def Kopfdaten(selection):
     Stat=1
     return Stat
 
+def Shinozaki():
+    S=pd.read_excel("SORTstatistics.xlsx", sheet_name="Shinozaki - Anlage", header=2, index_col=0)
+#    print(S)
+    plt.xticks(S.index, labels=[1,"",3,"",5,"",7,"",9,"",11,"",13,"",15,"",17,"",19,"",21])
+    plt.plot(S["DS - S"], label="DS", marker="o")
+    plt.plot(S["TH - S"], label="TH", marker="s")
+    plt.plot(S["ZS - S"], label="ZS", marker="X")
+    plt.legend()
+    plt.title("Shinozaki-Kurve")
+    plt.savefig(rf"Figures\Shinozaki.png", bbox_inches="tight")
+#    plt.show()
+    plt.close()
+    Stat=2
+    return Stat
+
 if __name__ == "__main__":
     Boot = str(input("Starten: type any string | Ende \n"))
     if Boot != "Ende":
         while Boot != "Ende":
             Status = 0
-            Task = str(input("KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Ende \n"))
+            Task = str(input("KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Ende \n"))
             if Task == "KMW":
                 while Status != 2:
                     selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
@@ -195,14 +209,20 @@ if __name__ == "__main__":
                     elif Status == 2:
                         print("KMW beendet")
             elif Task == "K":
-                    Status=0
-                    while Status != 2:
-                        selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
-                        Status=Kopfdaten(selection)
-                        if Status == 1:
-                            print(f"{selection} Done")
-                        elif Status == 2:
-                            print("K beendet")
+                Status=0
+                while Status != 2:
+                    selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
+                    Status=Kopfdaten(selection)
+                    if Status == 1:
+                        print(f"{selection} Done")
+                    elif Status == 2:
+                        print("K beendet")
+            elif Task == "SK":
+                Status=0
+                while Status !=2:
+                    Status=Shinozaki()
+                    if Status == 2:
+                        print("Shinozaki beendet")
             elif Task == "Ende":
                 Boot = str(input("Starten: type any string | Ende \n"))
 
