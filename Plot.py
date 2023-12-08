@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from os import listdir, path
+from PIL import Image as img
+
 #DSKM_mL= pd.read_csv("DSKM_mL.txt", sep=";",decimal=",")
 
 paramDict = {"Dges [%]":0,"DKr [%]":4,"DMoos [%]":8,"DStreu [%]":12,"HKr [cm]":16,"mT":20,"mL":24,"mF":28,"mR":32,"mN":36,"mM":40,"mW":44,"mTr":48,"AntThero":52,"AntHemi":56,"E":60,"Hs":64,"AbS":68,"Artzahl":72}
@@ -194,12 +197,102 @@ def Shinozaki():
     Stat=2
     return Stat
 
+def Grouped(selection):
+    pathDS="Figures\Kopfdaten\DS"
+    pathTH ="Figures\Kopfdaten\TH"
+    pathZS ="Figures\Kopfdaten\ZS"
+    picturesDS=listdir(pathDS)
+    picturesTH=listdir(pathTH)
+    picturesZS=listdir(pathZS)
+    #print(picturesDS)
+
+    if selection == "small":
+        for i in range(len(picturesDS)):
+            imDS=img.open(f"{pathDS}\{picturesDS[i]}")
+        #    imDS.show()
+        #    print(imDS.size)
+            imTH=img.open(f"{pathTH}\{picturesTH[i]}")
+            imZS=img.open(f"{pathZS}\{picturesZS[i]}")
+            if imDS.size[0] == imTH.size[0] == imZS.size[0]:
+                Gw=imDS.size[0]
+                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]
+                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
+                imGroup.paste(imDS,(0,0))
+                imGroup.paste(imTH, (0, imDS.size[1]))
+                imGroup.paste(imZS, (0, imDS.size[1]+imTH.size[1]))
+        #        imGroup.show()
+                imGroup.save(rf"Figures\Grouped\{picturesDS[i]}.png")
+        #        print("alle gleiche Größe")
+            else: 
+                Gw=max([imDS.size[0], imTH.size[0], imZS.size[0]])
+        #        print(f"{Gw}\n DS: {imDS.size[0]} TH: {imTH.size[0]} ZS: {imZS.size[0]}")
+                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]
+                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
+                imGroup.paste(imDS, (int((Gw-imDS.size[0])/2),0))
+                imGroup.paste(imTH, (int((Gw-imTH.size[0])/2), imDS.size[1]))
+                imGroup.paste(imZS, (int((Gw-imZS.size[0])/2), imDS.size[1]+imTH.size[1]))
+        #        imGroup.show()
+                imGroup.save(rf"Figures\Grouped\{picturesDS[i]}.png")
+        #        print("Nope")
+            imDS.close()
+            imTH.close()
+            imZS.close()
+
+        Stat=1
+        return Stat
+    
+    elif selection == "big":
+        pathA ="Figures\Kopfdaten\Anlage"
+        picturesA=listdir(pathA)
+        #print(picturesA)
+        for i in range(len(picturesA)):
+            imDS=img.open(f"{pathDS}\{picturesDS[i]}")
+        #    imDS.show()
+            imTH=img.open(f"{pathTH}\{picturesTH[i]}")
+            imZS=img.open(f"{pathZS}\{picturesZS[i]}")
+            imA=img.open(f"{pathA}\{picturesA[i]}")
+#            print(f"DS: {imDS.size}\nTH: {imTH.size}\nZS: {imZS.size}\nA:{imA.size}")
+            if imDS.size[0] == imTH.size[0] == imZS.size[0] == imA.size[0]:
+                Gw=imDS.size[0]
+                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]+imA.size[1]
+                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
+                imGroup.paste(imDS,(0,0))
+                imGroup.paste(imTH, (0, imDS.size[1]))
+                imGroup.paste(imZS, (0, imDS.size[1]+imTH.size[1]))
+                imGroup.paste(imA, (0, imDS.size[1]+imTH.size[1]+imZS.size[1]))
+        #        imGroup.show()
+                imGroup.save(rf"Figures\BigGrouped\{picturesDS[i]}.png")
+#                print("alle gleiche Größe")
+            else: 
+                Gw=max([imDS.size[0], imTH.size[0], imZS.size[0], imA.size[0]])
+        #        print(f"{Gw}\n DS: {imDS.size[0]} TH: {imTH.size[0]} ZS: {imZS.size[0]}")
+                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]+imA.size[1]
+                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
+                imGroup.paste(imDS, (int((Gw-imDS.size[0])/2),0))
+                imGroup.paste(imTH, (int((Gw-imTH.size[0])/2), imDS.size[1]))
+                imGroup.paste(imZS, (int((Gw-imZS.size[0])/2), imDS.size[1]+imTH.size[1]))
+                imGroup.paste(imA, (int((Gw-imA.size[0])/2), imDS.size[1]+imTH.size[1]+imZS.size[1]))
+        #        imGroup.show()
+                imGroup.save(rf"Figures\BigGrouped\{picturesA[i]}.png")
+#                print("Nope")
+            imDS.close()
+            imTH.close()
+            imZS.close()
+            imA.close()
+
+        Stat=1
+        return Stat
+    
+    elif selection == "Ende":
+        Stat=2
+        return Stat
+
 if __name__ == "__main__":
     Boot = str(input("Starten: type any string | Ende \n"))
     if Boot != "Ende":
         while Boot != "Ende":
             Status = 0
-            Task = str(input("KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Ende \n"))
+            Task = str(input("KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Grouped: G | Ende \n"))
             if Task == "KMW":
                 while Status != 2:
                     selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
@@ -223,6 +316,14 @@ if __name__ == "__main__":
                     Status=Shinozaki()
                     if Status == 2:
                         print("Shinozaki beendet")
+            elif Task == "G":
+                while Status != 2:
+                    selection=str(input("small | big | Ende \n"))
+                    Status=Grouped(selection)
+                    if Status == 1:
+                        print(f"{selection} Done")
+                    elif Status == 2:
+                        print("G beendet")
             elif Task == "Ende":
                 Boot = str(input("Starten: type any string | Ende \n"))
 
