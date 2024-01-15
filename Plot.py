@@ -375,7 +375,7 @@ def Kopfdaten(selection):
             KMA=pd.DataFrame(KMa)
             #print(f"{i} - {st.kruskal(KBe,KMa)}")
 
-            KBEdata=[i,len(KBE),np.mean(KBE)[0],np.median(KBE),np.std(KBE, ddof=1)[0],st.kruskal(KBE,KMA)[0],st.kruskal(KBE,KMA)[1]]
+            KBEdata=[i,len(KBE),np.mean(KBE)[0],np.median(KBE),np.std(KBE, ddof=1)[0],st.mannwhitneyu(KBE,KMA)[0],st.mannwhitneyu(KBE,KMA)[1]]
             KMAdata=[i,len(KMA),np.mean(KMA)[0],np.median(KMA),np.std(KMA, ddof=1)[0],"",""]
 
             pd.DataFrame(data=[KBEdata,KMAdata], index=["Be","Ma"], columns=["Parameter","n","mean","median","std","KW","p"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
@@ -432,20 +432,20 @@ def Kopfdaten(selection):
             KMAH=pd.DataFrame(KMaH)
             KMAS=pd.DataFrame(KMaS)
 
-            KWlistBE=[]
-            KWlistBE.append(st.kruskal(KBEM, KBEH)[1][0])
-            KWlistBE.append(st.kruskal(KBEM, KBES)[1][0])
-            KWlistBE.append(st.kruskal(KBEH, KBES)[1][0])
+            UlistBE=[]
+            UlistBE.append(st.mannwhitneyu(KBEM, KBEH)[1][0])
+            UlistBE.append(st.mannwhitneyu(KBEM, KBES)[1][0])
+            UlistBE.append(st.mannwhitneyu(KBEH, KBES)[1][0])
 
-            KWlistMA=[]
-            KWlistMA.append(st.kruskal(KMAM, KMAH)[1][0])
-            KWlistMA.append(st.kruskal(KMAM, KMAS)[1][0])
-            KWlistMA.append(st.kruskal(KMAH, KMAS)[1][0])
+            UlistMA=[]
+            UlistMA.append(st.mannwhitneyu(KMAM, KMAH)[1][0])
+            UlistMA.append(st.mannwhitneyu(KMAM, KMAS)[1][0])
+            UlistMA.append(st.mannwhitneyu(KMAH, KMAS)[1][0])
 
-            KBEMdata=[f"{i} - Bew",len(KBEM),np.mean(KBEM)[0],np.median(KBEM),np.std(KBEM, ddof=1)[0],st.kruskal(KBEM,KBEH,KBES)[0],st.kruskal(KBEM,KBEH,KBES)[1], mt.multipletests(KWlistBE, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlistBE, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlistBE, alpha=0.05, method='bonferroni')[0][2],"",st.kruskal(KBEM,KMAM)[1],st.kruskal(KBEH,KMAH)[1],st.kruskal(KBES,KMAS)[1]]
+            KBEMdata=[f"{i} - Bew",len(KBEM),np.mean(KBEM)[0],np.median(KBEM),np.std(KBEM, ddof=1)[0],st.kruskal(KBEM,KBEH,KBES)[0],st.kruskal(KBEM,KBEH,KBES)[1], mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][2],"",st.mannwhitneyu(KBEM,KMAM)[1],st.mannwhitneyu(KBEH,KMAH)[1],st.mannwhitneyu(KBES,KMAS)[1]]
             KBEHdata=[f"{i} - Bew",len(KBEH),np.mean(KBEH)[0],np.median(KBEH),np.std(KBEH, ddof=1)[0],"","", "","","","","","",""]
             KBESdata=[f"{i} - Bew",len(KBES),np.mean(KBES)[0],np.median(KBES),np.std(KBES, ddof=1)[0],"","", "","","","","","",""]
-            KMAMdata=[f"{i} - Mahd",len(KMAM),np.mean(KMAM)[0],np.median(KMAM),np.std(KMAM, ddof=1)[0],st.kruskal(KMAM,KMAH,KMAS)[0],st.kruskal(KMAM,KMAH,KMAS)[1], mt.multipletests(KWlistMA, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlistMA, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlistMA, alpha=0.05, method='bonferroni')[0][2],"","","",""]
+            KMAMdata=[f"{i} - Mahd",len(KMAM),np.mean(KMAM)[0],np.median(KMAM),np.std(KMAM, ddof=1)[0],st.kruskal(KMAM,KMAH,KMAS)[0],st.kruskal(KMAM,KMAH,KMAS)[1], mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][2],"","","",""]
             KMAHdata=[f"{i} - Mahd",len(KMAH),np.mean(KMAH)[0],np.median(KMAH),np.std(KMAH, ddof=1)[0],"","", "","","","","","",""]
             KMASdata=[f"{i} - Mahd",len(KMAS),np.mean(KMAS)[0],np.median(KMAS),np.std(KMAS, ddof=1)[0],"","", "","","","","","",""]
 
