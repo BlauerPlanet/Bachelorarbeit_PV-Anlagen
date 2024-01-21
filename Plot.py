@@ -10,95 +10,95 @@ import statsmodels.stats.multitest as mt
 
 #DSKM_mL= pd.read_csv("DSKM_mL.txt", sep=";",decimal=",")
 
-paramDict = {"Dges [%]":0,"DKr [%]":4,"DMoos [%]" :8,"DStreu [%]":12,"HKr [cm]":16,"mT":20,"mL":24,"mF":28,"mR":32,"mN":36,"mM":40,"mW":44,"mTr":48,"AntThero":52,"AntHemi":56,"E":60,"Hs":64,"AbS":68,"Artzahl":72}
-param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL","mF","mR","mN","mM","mW","mTr","AntThero","AntHemi","E","Hs","AbS","Artzahl"]
+#paramDict = {"Dges [%]":0,"DKr [%]":4,"DMoos [%]" :8,"DStreu [%]":12,"HKr [cm]":16,"mT":20,"mL":24,"mF":28,"mR":32,"mN":36,"mM":40,"mW":44,"mTr":48,"AntThero":52,"AntHemi":56,"E":60,"Hs":64,"AbS":68,"Artzahl":72}
+param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL", "mL2","mF","mR","mN","mM","mW","mTr","AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
 vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
-staparam = ["mT","mL","mF","mR","mN","mM","mW","mTr"]
-divparam=["AntThero","AntHemi","E","Hs","AbS","Artzahl"]
+staparam = ["mT","mL", "mL2","mF","mR","mN","mM","mW","mTr"]
+divparam=["AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
 l = []
 
-def KopfdatenMW(selection):
-    Stat = 0
-    if selection == "DS":
-        KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - DS", header=1, index_col=0)
-    elif selection == "TH":
-        KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - TH", header=1, index_col=0)
-    elif selection == "ZS":
-        KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - ZS", header=1, index_col=0)
-    elif selection == "Anlage":
-        KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - Anlage", header=1, index_col=0)
-    elif selection == "Ende":
-        Stat=2
-        return Stat
-    #print(type(KM.index[1])==type(param[1]))
-    for i in KM.index:
-        l.append(KM.loc[f"{i}"])
+# def KopfdatenMW(selection):
+#     Stat = 0
+#     if selection == "DS":
+#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - DS", header=1, index_col=0)
+#     elif selection == "TH":
+#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - TH", header=1, index_col=0)
+#     elif selection == "ZS":
+#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - ZS", header=1, index_col=0)
+#     elif selection == "Anlage":
+#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - Anlage", header=1, index_col=0)
+#     elif selection == "Ende":
+#         Stat=2
+#         return Stat
+#     #print(type(KM.index[1])==type(param[1]))
+#     for i in KM.index:
+#         l.append(KM.loc[f"{i}"])
 
-    for ind in range(len(param)):
-    #    print(l[paramDict[f"{param[ind]}"]])
-        ind_df=pd.DataFrame(l[paramDict[f"{param[ind]}"]])
-    #    print(ind_df)
-        plt.errorbar(ind_df["Typ"],ind_df["Mittelwert"], ind_df["StdAbw"], fmt='ok', lw=3, label="Mittelwert und Standardabweichung")
-        plt.errorbar(ind_df["Typ"],ind_df["Median"], fmt="ro", label="Median")
-        plt.title(f"{ind_df.index[0]} - {selection}", loc="left", fontsize=12)
-        plt.legend(bbox_to_anchor=(0,1,1,0), loc="lower right", fontsize=8)
-#        plt.tight_layout()
-#        plt.show()
-        plt.savefig(rf"Figures\KopfdatenMW\{selection}\{ind_df.index[0]}.png", bbox_inches="tight")
-        plt.close()
-    Stat=1
-    return Stat
+#     for ind in range(len(param)):
+#     #    print(l[paramDict[f"{param[ind]}"]])
+#         ind_df=pd.DataFrame(l[paramDict[f"{param[ind]}"]])
+#     #    print(ind_df)
+#         plt.errorbar(ind_df["Typ"],ind_df["Mittelwert"], ind_df["StdAbw"], fmt='ok', lw=3, label="Mittelwert und Standardabweichung")
+#         plt.errorbar(ind_df["Typ"],ind_df["Median"], fmt="ro", label="Median")
+#         plt.title(f"{ind_df.index[0]} - {selection}", loc="left", fontsize=12)
+#         plt.legend(bbox_to_anchor=(0,1,1,0), loc="lower right", fontsize=8)
+# #        plt.tight_layout()
+# #        plt.show()
+#         plt.savefig(rf"Figures\KopfdatenMW\{selection}\{ind_df.index[0]}.png", bbox_inches="tight")
+#         plt.close()
+#     Stat=1
+#     return Stat
 
 def Kopfdaten(selection):
     Stat = 0
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
-    if selection == "spear":
-        SPR=pd.DataFrame()
-        SPRE=pd.DataFrame(index=param, columns=param)
-        DSList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6', 'DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6', 'DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6']
-        THList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4', 'THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4', 'THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4']
-        ZSList=['ZSM', 'ZSM.1', 'ZSM.2', 'ZSM.3', 'ZSH', 'ZSH.1', 'ZSH.2', 'ZSH.3', 'ZSS', 'ZSS.1', 'ZSS.2', 'ZSS.3']
+    # if selection == "spear":
+    #     SPR=pd.DataFrame()
+    #     SPRE=pd.DataFrame(index=param, columns=param)
+    #     DSList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6', 'DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6', 'DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6']
+    #     THList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4', 'THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4', 'THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4']
+    #     ZSList=['ZSM', 'ZSM.1', 'ZSM.2', 'ZSM.3', 'ZSH', 'ZSH.1', 'ZSH.2', 'ZSH.3', 'ZSS', 'ZSS.1', 'ZSS.2', 'ZSS.3']
 
-        for i in param:
-            SPR_single=pd.DataFrame(K.loc[f"{i}"])
-            SPR=pd.concat([SPR , SPR_single], axis=1)
-        sel=str(input("Alle | DS | TH | ZS\n"))
-        if sel=="Alle":
-            print(SPR)
-            #print(SPR[param[0]].loc["DSS"])
-            print(np.array(SPR[param[0]]))
-            for iHN in range(len(param)):
-                for iVN in range(len(param)):
-                    #print(f"{param[iHN]} - {param[iVN]} | {st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')}")
-                    SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-            #print(SPRE)
-            with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-                SPRE.to_excel(writer, sheet_name="SpearAll")
-        elif sel == "DS":
-            #print(SPR)
-            SPRDS=SPR.iloc[:len(DSList)]
-            #print(SPRDS)
-            for iHN in range(len(param)):
-                for iVN in range(len(param)):
-                    SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-            with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-                SPRE.to_excel(writer, sheet_name="SpearDS")           
-        elif sel == "TH":
-            SPRTH=SPR.iloc[len(DSList):(len(DSList)+len(THList))]
-            print(SPRTH)
-            for iHN in range(len(param)):
-                for iVN in range(len(param)):
-                    SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-            with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-                SPRE.to_excel(writer, sheet_name="SpearTH")
-        elif sel == "ZS":
-            SPRZS=SPR.iloc[(len(DSList)+len(THList)):(len(DSList)+len(THList)+len(ZSList))]
-            print(SPRZS)
-            for iHN in range(len(param)):
-                for iVN in range(len(param)):
-                    SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-            with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-                SPRE.to_excel(writer, sheet_name="SpearZS")
+    #     for i in param:
+    #         SPR_single=pd.DataFrame(K.loc[f"{i}"])
+    #         SPR=pd.concat([SPR , SPR_single], axis=1)
+    #     sel=str(input("Alle | DS | TH | ZS\n"))
+    #     if sel=="Alle":
+    #         print(SPR)
+    #         #print(SPR[param[0]].loc["DSS"])
+    #         print(np.array(SPR[param[0]]))
+    #         for iHN in range(len(param)):
+    #             for iVN in range(len(param)):
+    #                 #print(f"{param[iHN]} - {param[iVN]} | {st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')}")
+    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[1]}")
+    #         #print(SPRE)
+    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
+    #             SPRE.to_excel(writer, sheet_name="SpearAll")
+    #     elif sel == "DS":
+    #         #print(SPR)
+    #         SPRDS=SPR.iloc[:len(DSList)]
+    #         #print(SPRDS)
+    #         for iHN in range(len(param)):
+    #             for iVN in range(len(param)):
+    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
+    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
+    #             SPRE.to_excel(writer, sheet_name="SpearDS")           
+    #     elif sel == "TH":
+    #         SPRTH=SPR.iloc[len(DSList):(len(DSList)+len(THList))]
+    #         print(SPRTH)
+    #         for iHN in range(len(param)):
+    #             for iVN in range(len(param)):
+    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[1]}")
+    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
+    #             SPRE.to_excel(writer, sheet_name="SpearTH")
+    #     elif sel == "ZS":
+    #         SPRZS=SPR.iloc[(len(DSList)+len(THList)):(len(DSList)+len(THList)+len(ZSList))]
+    #         print(SPRZS)
+    #         for iHN in range(len(param)):
+    #             for iVN in range(len(param)):
+    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
+    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
+    #             SPRE.to_excel(writer, sheet_name="SpearZS")
            
     for i in param:
         KP=pd.DataFrame(K.loc[f"{i}"])
@@ -128,6 +128,7 @@ def Kopfdaten(selection):
             KPM=pd.DataFrame(DSM)
             KPH=pd.DataFrame(DSH)
             KPS=pd.DataFrame(DSS)
+            pd.DataFrame(data=[DSM,DSH,DSS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
 
             KWlist=[]
             KWlist.append(st.kruskal(KPM, KPH)[1][0])
@@ -177,6 +178,8 @@ def Kopfdaten(selection):
             KPH=pd.DataFrame(THH)
             KPS=pd.DataFrame(THS)
             
+            pd.DataFrame(data=[THM,THH,THS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
+            
             KWlist=[]
             KWlist.append(st.kruskal(KPM, KPH)[1][0])
             KWlist.append(st.kruskal(KPM, KPS)[1][0])
@@ -224,7 +227,7 @@ def Kopfdaten(selection):
             KPH=pd.DataFrame(ZSH)
             KPS=pd.DataFrame(ZSS)
             #print(f"{i} - {st.kruskal(ZSM,ZSH,ZSS)}")
-
+            pd.DataFrame(data=[ZSM,ZSH,ZSS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
             KWlist=[]
             KWlist.append(st.kruskal(KPM, KPH)[1][0])
             KWlist.append(st.kruskal(KPM, KPS)[1][0])
@@ -657,10 +660,13 @@ def compare(selection):
             KPMZS=pd.DataFrame(ZSM)
             KPHZS=pd.DataFrame(ZSH)
             KPSZS=pd.DataFrame(ZSS)
-
+            KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
+            pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")
+            KPDSTHZSkwtest=[st.kruskal(KPMDS,KPMTH,KPMZS)[0],st.kruskal(KPMDS,KPMTH,KPMZS)[1],st.kruskal(KPHDS,KPHTH,KPHZS)[0],st.kruskal(KPHDS,KPHTH,KPHZS)[1],st.kruskal(KPSDS,KPSTH,KPSZS)[0],st.kruskal(KPSDS,KPSTH,KPSZS)[1]]
             #print(f"{i} - {KPMDS}")
             #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
-
+            pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
+            
             yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
             yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
            
@@ -694,34 +700,34 @@ def compare(selection):
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
             
-            plt.title(f"{i} - DS", loc="left")
-            plt.boxplot(KPMDS, labels="M", showmeans=True, meanprops={"marker":"+"})
+            plt.title(f"{i} - TH", loc="left")
+            plt.boxplot(KPMTH, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax2=plt.subplot(1,11,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPHDS, labels="H", showmeans=True, meanprops={"marker":"+"})
+            plt.boxplot(KPHTH, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax3=plt.subplot(1,11,3, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPSDS, labels="S", showmeans=True, meanprops={"marker":"+"})
+            plt.boxplot(KPSTH, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax4=plt.subplot(1,11,5, sharey=ax1)
-            plt.title("TH", loc="left")
-            plt.tick_params("y", labelleft=True)
-            plt.boxplot(KPMTH, labels="M", showmeans=True, meanprops={"marker":"+"})  
-            ax5=plt.subplot(1,11,6, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPHTH, labels="H", showmeans=True, meanprops={"marker":"+"})
-            ax6=plt.subplot(1,11,7, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPSTH, labels="S", showmeans=True, meanprops={"marker":"+"})
-            ax7=plt.subplot(1,11,9, sharey=ax1)
             plt.title("ZS", loc="left")
             plt.tick_params("y", labelleft=True)
-            plt.boxplot(KPMZS, labels="M", showmeans=True, meanprops={"marker":"+"})
+            plt.boxplot(KPMZS, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})  
+            ax5=plt.subplot(1,11,6, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHZS, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax6=plt.subplot(1,11,7, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSZS, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax7=plt.subplot(1,11,9, sharey=ax1)
+            plt.title("DS", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPMDS, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax8=plt.subplot(1,11,10, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPHZS, labels="H", showmeans=True, meanprops={"marker":"+"})
+            plt.boxplot(KPHDS, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax9=plt.subplot(1,11,11, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPSZS, labels="S", showmeans=True, meanprops={"marker":"+"})
+            plt.boxplot(KPSDS, labels="S", showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
             plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="")
             plt.close()  
         elif selection == "Ende": 
@@ -738,6 +744,8 @@ def merge():
     pathAlle=r"XLSX\Alle"
     pathNutz=r"XLSX\Nutz"
     pathNutzTyp=r"XLSX\NutzTyp"
+    pathDSZS=r"XLSX\DSZS"
+    pathDSTHZS=r"XLSX\DSTHZS"
 
     dfDS=pd.DataFrame()
     dfTH=pd.DataFrame()
@@ -746,29 +754,37 @@ def merge():
     dfAlle=pd.DataFrame()
     dfNutz=pd.DataFrame()
     dfNutzTyp=pd.DataFrame()
+    dfDSZS=pd.DataFrame()
+    dfDSTHZS=pd.DataFrame()
 
     for file1 in listdir(pathDS):
         dfDS = dfDS.append(pd.read_excel(f"{pathDS}\{file1}", header=0, index_col=0))
-    for file2 in listdir(pathDS):
+    for file2 in listdir(pathTH):
         dfTH = dfTH.append(pd.read_excel(f"{pathTH}\{file2}", header=0, index_col=0))
-    for file3 in listdir(pathDS):
+    for file3 in listdir(pathZS):
         dfZS = dfZS.append(pd.read_excel(f"{pathZS}\{file3}", header=0, index_col=0))
-    for file4 in listdir(pathDS):
+    for file4 in listdir(pathAnlage):
         dfAnlage = dfAnlage.append(pd.read_excel(f"{pathAnlage}\{file4}", header=0, index_col=0))
-    for file5 in listdir(pathDS):
-        dfAlle = dfAlle.append(pd.read_excel(f"{pathAlle}\{file5}", header=0, index_col=0))
-    for file6 in listdir(pathDS):
-        dfNutz = dfNutz.append(pd.read_excel(f"{pathNutz}\{file6}", header=0, index_col=0))
-    for file7 in listdir(pathDS):
-        dfNutzTyp = dfNutzTyp.append(pd.read_excel(f"{pathNutzTyp}\{file7}", header=0, index_col=0))
+    # for file5 in listdir(pathAlle):
+    #     dfAlle = dfAlle.append(pd.read_excel(f"{pathAlle}\{file5}", header=0, index_col=0))
+    # for file6 in listdir(pathNutz):
+    #     dfNutz = dfNutz.append(pd.read_excel(f"{pathNutz}\{file6}", header=0, index_col=0))
+    # for file7 in listdir(pathNutzTyp):
+    #     dfNutzTyp = dfNutzTyp.append(pd.read_excel(f"{pathNutzTyp}\{file7}", header=0, index_col=0))
+    for file8 in listdir(pathDSZS):
+        dfDSZS = dfDSZS.append(pd.read_excel(f"{pathDSZS}\{file8}", header=0, index_col=0))
+    for file9 in listdir(pathDSTHZS):
+        dfDSTHZS = dfDSTHZS.append(pd.read_excel(f"{pathDSTHZS}\{file9}", header=0, index_col=0))
     with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
         dfDS.to_excel(writer, sheet_name="KDS")
         dfTH.to_excel(writer, sheet_name="KTH")
         dfZS.to_excel(writer, sheet_name="KZS")
         dfAnlage.to_excel(writer, sheet_name="KAnlage")
-        dfAlle.to_excel(writer, sheet_name="KAlle")
-        dfNutz.to_excel(writer, sheet_name="KNutz")
-        dfNutzTyp.to_excel(writer, sheet_name="KNutzTyp")
+        # dfAlle.to_excel(writer, sheet_name="KAlle")
+        # dfNutz.to_excel(writer, sheet_name="KNutz")
+        # dfNutzTyp.to_excel(writer, sheet_name="KNutzTyp")
+        dfDSZS.to_excel(writer, sheet_name="DSZS")
+        dfDSTHZS.to_excel(writer, sheet_name="DSTHZS")
         
     Stat=2
     return Stat
@@ -832,27 +848,33 @@ def DWD():
     Stat=2
     return Stat
 
-def Arten():
-    ArtenDS = pd.read_excel("Artenliste.xlsx", sheet_name="DS", header=None, index_col=None)
-    ArtenTH = pd.read_excel("Artenliste.xlsx", sheet_name="DS", header=None, index_col=None)
-    ArtenZS = pd.read_excel("Artenliste.xlsx", sheet_name="DS", header=None, index_col=None)
-    ArtenListDS = []
-    ArtenListTH = []
-    ArtenListZS = []
+def Korr(selection):
 
-    for iDS in range(0,len(ArtenDS.index)):
-        ArtenListDS.append(str(ArtenDS[0].loc[iDS]))
+    if selection == "DS":
+        path=r"XLSX\Korr\DS"
+    elif selection == "TH":
+        path=r"XLSX\Korr\TH"
+    elif selection == "ZS":
+        path=r"XLSX\Korr\ZS"
+    elif selection == "Ende": 
+        Stat=2
+        return Stat
 
-    for iTH in range(0,len(ArtenTH.index)):
-        ArtenListDS.append(str(ArtenTH[0].loc[iTH]))
-
-    for iZS in range(0,len(ArtenZS.index)):
-        ArtenListDS.append(str(ArtenZS[0].loc[iZS]))
-
-    for iA in ArtenListDS:
-        if iA not in ArtenListDS or ArtenListTH:
-            print(f"unique species - {iA}")
-    Stat=2
+    for ix in param:
+        for iy in param:
+            if ix != iy:
+                dfx=pd.read_excel(rf"{path}\{ix}.xlsx", index_col=0)
+                dfy=pd.read_excel(rf"{path}\{iy}.xlsx", index_col=0)
+                plt.scatter(dfx.loc["M"],dfy.loc["M"], label="M", marker="x", c="r")
+                plt.scatter(dfx.loc["H"],dfy.loc["H"], label="H", marker="o", c="g")
+                plt.scatter(dfx.loc["S"],dfy.loc["S"], label="S", marker="s", c="b")
+                plt.xlabel(ix)
+                plt.ylabel(iy)
+                plt.legend()
+                plt.savefig(rf"Figures\Korr\{selection}\f(x)={iy}({ix}).png", bbox_inches="tight")
+                plt.close()
+                #plt.show()
+    Stat=1
     return Stat
 
 if __name__ == "__main__":
@@ -860,11 +882,11 @@ if __name__ == "__main__":
     if Boot != "Ende":
         while Boot != "Ende":
             Status = 0
-            Task = str(input("Arten | DWD | KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Grouped: G | compare | merge | Ende \n"))
+            Task = str(input("Korr | DWD | KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Grouped: G | compare | merge | Ende \n"))
             if Task == "KMW":
                 while Status != 2:
                     selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
-                    Status=KopfdatenMW(selection)
+                    #Status=KopfdatenMW(selection)
                     if Status == 1:
                         print(f"{selection} Done")
                     elif Status == 2:
@@ -872,7 +894,7 @@ if __name__ == "__main__":
             elif Task == "K":
                 Status=0
                 while Status != 2:
-                    selection=str(input("spear | DS | TH | ZS | Anlage | Alle  | Nutz | NutzTyp | Ende \n"))
+                    selection=str(input("(spear) | DS | TH | ZS | Anlage | (Alle)  | (Nutz) | (NutzTyp) | Ende \n"))
                     Status=Kopfdaten(selection)
                     if Status == 1:
                         print(f"{selection} Done")
@@ -912,12 +934,14 @@ if __name__ == "__main__":
                     Status=DWD()
                     if Status == 2:
                         print("DWD beendet")
-            elif Task =="Arten":
-                Status=0
+            elif Task =="Korr":
                 while Status !=2:
-                    Status=Arten()
-                    if Status == 2:
-                        print("Arten beendet")
+                    selection=str(input("DS | TH | ZS | Ende \n"))
+                    Status=Korr(selection)
+                    if Status == 1:
+                        print(f"{selection} Done")
+                    elif Status == 2:
+                        print("Korr beendet")
             elif Task == "Ende":
                 Boot = str(input("Starten: type any string | Ende \n"))
 
@@ -926,6 +950,7 @@ if __name__ == "__main__":
                 # Kopfdaten (ohne Spear)
                 # Compare und merge
                 # DWD
+                # Korr
     
 
     
