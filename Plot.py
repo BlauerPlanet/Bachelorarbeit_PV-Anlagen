@@ -8,98 +8,15 @@ import numpy as np
 from scipy import stats as st
 import statsmodels.stats.multitest as mt
 
-#DSKM_mL= pd.read_csv("DSKM_mL.txt", sep=";",decimal=",")
-
-#paramDict = {"Dges [%]":0,"DKr [%]":4,"DMoos [%]" :8,"DStreu [%]":12,"HKr [cm]":16,"mT":20,"mL":24,"mF":28,"mR":32,"mN":36,"mM":40,"mW":44,"mTr":48,"AntThero":52,"AntHemi":56,"E":60,"Hs":64,"AbS":68,"Artzahl":72}
 param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL", "mL2","mF","mR","mN","mM","mW","mTr","AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
 vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
 staparam = ["mT","mL", "mL2","mF","mR","mN","mM","mW","mTr"]
 divparam=["AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
-l = []
-
-# def KopfdatenMW(selection):
-#     Stat = 0
-#     if selection == "DS":
-#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - DS", header=1, index_col=0)
-#     elif selection == "TH":
-#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - TH", header=1, index_col=0)
-#     elif selection == "ZS":
-#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - FTyp - ZS", header=1, index_col=0)
-#     elif selection == "Anlage":
-#         KM = pd.read_excel("SORTstatistics.xlsx", sheet_name="KopfdatenMW - Anlage", header=1, index_col=0)
-#     elif selection == "Ende":
-#         Stat=2
-#         return Stat
-#     #print(type(KM.index[1])==type(param[1]))
-#     for i in KM.index:
-#         l.append(KM.loc[f"{i}"])
-
-#     for ind in range(len(param)):
-#     #    print(l[paramDict[f"{param[ind]}"]])
-#         ind_df=pd.DataFrame(l[paramDict[f"{param[ind]}"]])
-#     #    print(ind_df)
-#         plt.errorbar(ind_df["Typ"],ind_df["Mittelwert"], ind_df["StdAbw"], fmt='ok', lw=3, label="Mittelwert und Standardabweichung")
-#         plt.errorbar(ind_df["Typ"],ind_df["Median"], fmt="ro", label="Median")
-#         plt.title(f"{ind_df.index[0]} - {selection}", loc="left", fontsize=12)
-#         plt.legend(bbox_to_anchor=(0,1,1,0), loc="lower right", fontsize=8)
-# #        plt.tight_layout()
-# #        plt.show()
-#         plt.savefig(rf"Figures\KopfdatenMW\{selection}\{ind_df.index[0]}.png", bbox_inches="tight")
-#         plt.close()
-#     Stat=1
-#     return Stat
 
 def Kopfdaten(selection):
     Stat = 0
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
-    # if selection == "spear":
-    #     SPR=pd.DataFrame()
-    #     SPRE=pd.DataFrame(index=param, columns=param)
-    #     DSList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6', 'DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6', 'DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6']
-    #     THList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4', 'THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4', 'THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4']
-    #     ZSList=['ZSM', 'ZSM.1', 'ZSM.2', 'ZSM.3', 'ZSH', 'ZSH.1', 'ZSH.2', 'ZSH.3', 'ZSS', 'ZSS.1', 'ZSS.2', 'ZSS.3']
-
-    #     for i in param:
-    #         SPR_single=pd.DataFrame(K.loc[f"{i}"])
-    #         SPR=pd.concat([SPR , SPR_single], axis=1)
-    #     sel=str(input("Alle | DS | TH | ZS\n"))
-    #     if sel=="Alle":
-    #         print(SPR)
-    #         #print(SPR[param[0]].loc["DSS"])
-    #         print(np.array(SPR[param[0]]))
-    #         for iHN in range(len(param)):
-    #             for iVN in range(len(param)):
-    #                 #print(f"{param[iHN]} - {param[iVN]} | {st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')}")
-    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPR[param[iHN]], dtype=float),np.array(SPR[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-    #         #print(SPRE)
-    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-    #             SPRE.to_excel(writer, sheet_name="SpearAll")
-    #     elif sel == "DS":
-    #         #print(SPR)
-    #         SPRDS=SPR.iloc[:len(DSList)]
-    #         #print(SPRDS)
-    #         for iHN in range(len(param)):
-    #             for iVN in range(len(param)):
-    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRDS[param[iHN]], dtype=float),np.array(SPRDS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-    #             SPRE.to_excel(writer, sheet_name="SpearDS")           
-    #     elif sel == "TH":
-    #         SPRTH=SPR.iloc[len(DSList):(len(DSList)+len(THList))]
-    #         print(SPRTH)
-    #         for iHN in range(len(param)):
-    #             for iVN in range(len(param)):
-    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRTH[param[iHN]], dtype=float),np.array(SPRTH[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-    #             SPRE.to_excel(writer, sheet_name="SpearTH")
-    #     elif sel == "ZS":
-    #         SPRZS=SPR.iloc[(len(DSList)+len(THList)):(len(DSList)+len(THList)+len(ZSList))]
-    #         print(SPRZS)
-    #         for iHN in range(len(param)):
-    #             for iVN in range(len(param)):
-    #                 SPRE[param[iHN]].loc[param[iVN]]=(f"s={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[0]}",f"p={st.mstats.spearmanr(np.array(SPRZS[param[iHN]], dtype=float),np.array(SPRZS[param[iVN]], dtype=float), nan_policy='omit')[1]}")
-    #         with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
-    #             SPRE.to_excel(writer, sheet_name="SpearZS")
-           
+               
     for i in param:
         KP=pd.DataFrame(K.loc[f"{i}"])
 #        print(KP)
@@ -305,186 +222,6 @@ def Kopfdaten(selection):
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()
 
-        elif selection == "Alle":
-            AM=[]
-            AH=[]
-            AS=[]
-            AS1=[]
-            AMList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6','THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4','ZSM','ZSM.1','ZSM.2','ZSM.3']
-            AHList=['DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6','THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4','ZSH','ZSH.1','ZSH.2','ZSH.3'] 
-            ASList=['DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6','THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4','ZSS','ZSS.1','ZSS.2','ZSS.3']
-            for indM in AMList:
-#                print(KP.loc[f"{ind}"])
-                AM.append(float(KP.loc[f"{indM}"]))
-            for indH in AHList:
-                AH.append(float(KP.loc[f"{indH}"]))
-            for indS in ASList:
-                AS1.append(float(KP.loc[f"{indS}"]))
-
-            for iK in AS1:
-                #print({str(iK).replace(".","",1).isdigit()})
-                if str(iK).replace(".","",1).isdigit():
-                    AS.append(iK)
-
-            KAM=pd.DataFrame(AM)
-            KAH=pd.DataFrame(AH)
-            KAS=pd.DataFrame(AS)
-
-            KWlist=[]
-            KWlist.append(st.kruskal(KAM, KAH)[1][0])
-            KWlist.append(st.kruskal(KAM, KAS)[1][0])
-            KWlist.append(st.kruskal(KAH, KAS)[1][0])
-
-            Mdata=[i,len(KAM),np.mean(KAM)[0],np.median(KAM),np.std(KAM, ddof=1)[0],st.kruskal(KAM,KAH,KAS)[0],st.kruskal(KAM,KAH,KAS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]]
-            Hdata=[i,len(KAH),np.mean(KAH)[0],np.median(KAH),np.std(KAH, ddof=1)[0],"","", "","",""]
-            Sdata=[i,len(KAS),np.mean(KAS)[0],np.median(KAS),np.std(KAS, ddof=1)[0],"","", "","",""]
-
-            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std","KW","p","M-H","M-S","H-S"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
-
-            print(f"{i} - {st.kruskal(AM,AH,AS)}")            
-            plt.figure()
-            ax1=plt.subplot(1,3,1)
-            plt.title(f"{i} - DS, TH & ZS ", loc="left")
-            plt.boxplot(KAM, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax2=plt.subplot(1,3,2, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KAH, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax3=plt.subplot(1,3,3, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KAS, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-#            plt.show()
-            plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
-            plt.close()
-
-        elif selection == "Nutz":
-            KBe=[]
-            KMa=[]
-            KMa1=[]
-            KBeList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4','ZSM','ZSM.1','ZSM.2','ZSM.3', 'THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4','ZSH','ZSH.1','ZSH.2','ZSH.3','THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4','ZSS','ZSS.1','ZSS.2','ZSS.3' ]
-            KMaList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6','DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6', 'DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6'] 
-
-            for indBe in KBeList:
-#                print(KP.loc[f"{ind}"])
-                KBe.append(float(KP.loc[f"{indBe}"]))
-            for indMa in KMaList:
-                KMa1.append(float(KP.loc[f"{indMa}"]))
-            
-            for iK in KMa1:
-                #print({str(iK).replace(".","",1).isdigit()})
-                if str(iK).replace(".","",1).isdigit():
-                    KMa.append(iK)
-
-            KBE=pd.DataFrame(KBe)
-            KMA=pd.DataFrame(KMa)
-            #print(f"{i} - {st.kruskal(KBe,KMa)}")
-
-            KBEdata=[i,len(KBE),np.mean(KBE)[0],np.median(KBE),np.std(KBE, ddof=1)[0],st.mannwhitneyu(KBE,KMA)[0],st.mannwhitneyu(KBE,KMA)[1]]
-            KMAdata=[i,len(KMA),np.mean(KMA)[0],np.median(KMA),np.std(KMA, ddof=1)[0],"",""]
-
-            #print(KBEdata)
-            pd.DataFrame(data=[KBEdata,KMAdata], index=["Be","Ma"], columns=["Parameter","n","mean","median","std","U","p"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
-
-            plt.figure()
-            ax1=plt.subplot(1,2,1)
-            plt.title(f"{i}", loc="left")
-            plt.boxplot(KMA, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax2=plt.subplot(1,2,2, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KBE, labels="B", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-#            plt.show()
-            plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
-            plt.close()
-
-        elif selection == "NutzTyp":
-            KBeM=[]
-            KBeH=[]
-            KBeS=[]
-            KMaM=[]
-            KMaH=[]
-            KMaS=[]
-            KMaS1=[]
-            KBeMList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4','ZSM','ZSM.1','ZSM.2','ZSM.3']
-            KBeHList=['THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4','ZSH','ZSH.1','ZSH.2','ZSH.3']
-            KBeSList=['THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4','ZSS','ZSS.1','ZSS.2','ZSS.3' ]
-            KMaMList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6'] 
-            KMaHList=['DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6']
-            KMaSList=['DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6']
-            
-            for indBeM in KBeMList:
-#                print(KP.loc[f"{ind}"])
-                KBeM.append(float(KP.loc[f"{indBeM}"]))
-            for indBeH in KBeHList:
-                KBeH.append(float(KP.loc[f"{indBeH}"]))
-            for indBeS in KBeSList:
-                KBeS.append(float(KP.loc[f"{indBeS}"]))
-            for indMaM in KMaMList:
-                KMaM.append(float(KP.loc[f"{indMaM}"]))
-            for indMaH in KMaHList:
-                KMaH.append(float(KP.loc[f"{indMaH}"]))
-            for indMaS in KMaSList:
-                KMaS1.append(float(KP.loc[f"{indMaS}"]))
-
-            for iK in KMaS1:
-                #print({str(iK).replace(".","",1).isdigit()})
-                if str(iK).replace(".","",1).isdigit():
-                    KMaS.append(iK)
-
-            KBEM=pd.DataFrame(KBeM)
-            KBEH=pd.DataFrame(KBeH)
-            KBES=pd.DataFrame(KBeS)
-            KMAM=pd.DataFrame(KMaM)
-            KMAH=pd.DataFrame(KMaH)
-            KMAS=pd.DataFrame(KMaS)
-
-            UlistBE=[]
-            UlistBE.append(st.mannwhitneyu(KBEM, KBEH)[1][0])
-            UlistBE.append(st.mannwhitneyu(KBEM, KBES)[1][0])
-            UlistBE.append(st.mannwhitneyu(KBEH, KBES)[1][0])
-
-            UlistMA=[]
-            UlistMA.append(st.mannwhitneyu(KMAM, KMAH)[1][0])
-            UlistMA.append(st.mannwhitneyu(KMAM, KMAS)[1][0])
-            UlistMA.append(st.mannwhitneyu(KMAH, KMAS)[1][0])
-
-            KBEMdata=[f"{i} - Bew",len(KBEM),np.mean(KBEM)[0],np.median(KBEM),np.std(KBEM, ddof=1)[0],st.kruskal(KBEM,KBEH,KBES)[0],st.kruskal(KBEM,KBEH,KBES)[1], mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(UlistBE, alpha=0.05, method='bonferroni')[0][2],"",st.mannwhitneyu(KBEM,KMAM)[0],st.mannwhitneyu(KBEM,KMAM)[1],st.mannwhitneyu(KBEH,KMAH)[0],st.mannwhitneyu(KBEH,KMAH)[1],st.mannwhitneyu(KBES,KMAS)[0],st.mannwhitneyu(KBES,KMAS)[1]]
-            KBEHdata=[f"{i} - Bew",len(KBEH),np.mean(KBEH)[0],np.median(KBEH),np.std(KBEH, ddof=1)[0],"","", "","","","","","",""]
-            KBESdata=[f"{i} - Bew",len(KBES),np.mean(KBES)[0],np.median(KBES),np.std(KBES, ddof=1)[0],"","", "","","","","","",""]
-            KMAMdata=[f"{i} - Mahd",len(KMAM),np.mean(KMAM)[0],np.median(KMAM),np.std(KMAM, ddof=1)[0],st.kruskal(KMAM,KMAH,KMAS)[0],st.kruskal(KMAM,KMAH,KMAS)[1], mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(UlistMA, alpha=0.05, method='bonferroni')[0][2],"","","",""]
-            KMAHdata=[f"{i} - Mahd",len(KMAH),np.mean(KMAH)[0],np.median(KMAH),np.std(KMAH, ddof=1)[0],"","", "","","","","","",""]
-            KMASdata=[f"{i} - Mahd",len(KMAS),np.mean(KMAS)[0],np.median(KMAS),np.std(KMAS, ddof=1)[0],"","", "","","","","","",""]
-
-            pd.DataFrame(data=[KBEMdata,KBEHdata,KBESdata,KMAMdata,KMAHdata,KMASdata], index=["B-M","B-H","B-S","M-M","M-H","M-S"], columns=["Parameter","n","mean","median","std","KW","p","M-H","M-S","H-S", "","U-MB-MM","p-MB-MM","U-HB-HM","p-HB-HM","U-SB-SM","p-SB-SM"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
-            
-            #print(f"{i} Beweidung - {st.kruskal(KBeM,KBeH,KBeS)}")
-            #print(f"{i} Mahd - {st.kruskal(KMaM,KMaH,KMaS)}")
-            #print(f"{i} M - {st.kruskal(KBeM,KMaM)}")
-            #print(f"{i} H - {st.kruskal(KBeH,KMaH)}")
-            #print(f"{i} S - {st.kruskal(KBeS,KMaS)}")
-
-            plt.figure()
-            ax1=plt.subplot(1,7,1)
-            plt.title(f"{i} - Mahd", loc="left")
-            plt.boxplot(KMAM, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax2=plt.subplot(1,7,2, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KMAH, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax3=plt.subplot(1,7,3, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KMAS, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax4=plt.subplot(1,7,5, sharey=ax1)
-            plt.title(f"{i} - Beweidung", loc="left")
-            plt.tick_params("y", labelleft=True)
-            plt.boxplot(KBEM, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax5=plt.subplot(1,7,6, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KBEH, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            ax6=plt.subplot(1,7,7, sharey=ax1)
-            plt.tick_params("y", labelleft=False)
-            plt.boxplot(KBES, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-#            plt.show()
-            plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
-            plt.close()
-
         elif selection == "Ende":
             Stat=2
             return Stat
@@ -506,96 +243,6 @@ def Shinozaki():
     Stat=2
     return Stat
 
-def Grouped(selection):
-    pathDS=r"Figures\Kopfdaten\DS"
-    pathTH =r"Figures\Kopfdaten\TH"
-    pathZS =r"Figures\Kopfdaten\ZS"
-    picturesDS=listdir(pathDS)
-    picturesTH=listdir(pathTH)
-    picturesZS=listdir(pathZS)
-    #print(picturesDS)
-
-    if selection == "small":
-        for i in range(len(picturesDS)):
-            imDS=img.open(f"{pathDS}\{picturesDS[i]}")
-        #    imDS.show()
-        #    print(imDS.size)
-            imTH=img.open(f"{pathTH}\{picturesTH[i]}")
-            imZS=img.open(f"{pathZS}\{picturesZS[i]}")
-            if imDS.size[0] == imTH.size[0] == imZS.size[0]:
-                Gw=imDS.size[0]
-                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]
-                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
-                imGroup.paste(imDS,(0,0))
-                imGroup.paste(imTH, (0, imDS.size[1]))
-                imGroup.paste(imZS, (0, imDS.size[1]+imTH.size[1]))
-        #        imGroup.show()
-                imGroup.save(rf"Figures\Grouped\{picturesDS[i]}.png")
-        #        print("alle gleiche Größe")
-            else: 
-                Gw=max([imDS.size[0], imTH.size[0], imZS.size[0]])
-        #        print(f"{Gw}\n DS: {imDS.size[0]} TH: {imTH.size[0]} ZS: {imZS.size[0]}")
-                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]
-                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
-                imGroup.paste(imDS, (int((Gw-imDS.size[0])/2),0))
-                imGroup.paste(imTH, (int((Gw-imTH.size[0])/2), imDS.size[1]))
-                imGroup.paste(imZS, (int((Gw-imZS.size[0])/2), imDS.size[1]+imTH.size[1]))
-        #        imGroup.show()
-                imGroup.save(rf"Figures\Grouped\{picturesDS[i]}.png")
-        #        print("Nope")
-            imDS.close()
-            imTH.close()
-            imZS.close()
-
-        Stat=1
-        return Stat
-    
-    elif selection == "big":
-        pathA =r"Figures\Kopfdaten\Anlage"
-        picturesA=listdir(pathA)
-        #print(picturesA)
-        for i in range(len(picturesA)):
-            imDS=img.open(f"{pathDS}\{picturesDS[i]}")
-        #    imDS.show()
-            imTH=img.open(f"{pathTH}\{picturesTH[i]}")
-            imZS=img.open(f"{pathZS}\{picturesZS[i]}")
-            imA=img.open(f"{pathA}\{picturesA[i]}")
-#            print(f"DS: {imDS.size}\nTH: {imTH.size}\nZS: {imZS.size}\nA:{imA.size}")
-            if imDS.size[0] == imTH.size[0] == imZS.size[0] == imA.size[0]:
-                Gw=imDS.size[0]
-                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]+imA.size[1]
-                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
-                imGroup.paste(imDS,(0,0))
-                imGroup.paste(imTH, (0, imDS.size[1]))
-                imGroup.paste(imZS, (0, imDS.size[1]+imTH.size[1]))
-                imGroup.paste(imA, (0, imDS.size[1]+imTH.size[1]+imZS.size[1]))
-        #        imGroup.show()
-                imGroup.save(rf"Figures\Grouped\{picturesDS[i]}.png")
-#                print("alle gleiche Größe")
-            else: 
-                Gw=max([imDS.size[0], imTH.size[0], imZS.size[0], imA.size[0]])
-        #        print(f"{Gw}\n DS: {imDS.size[0]} TH: {imTH.size[0]} ZS: {imZS.size[0]}")
-                Gh=imDS.size[1]+imTH.size[1]+imZS.size[1]+imA.size[1]
-                imGroup=img.new("RGB", size=(Gw,Gh), color=(255,255,255))
-                imGroup.paste(imDS, (int((Gw-imDS.size[0])/2),0))
-                imGroup.paste(imTH, (int((Gw-imTH.size[0])/2), imDS.size[1]))
-                imGroup.paste(imZS, (int((Gw-imZS.size[0])/2), imDS.size[1]+imTH.size[1]))
-                imGroup.paste(imA, (int((Gw-imA.size[0])/2), imDS.size[1]+imTH.size[1]+imZS.size[1]))
-        #        imGroup.show()
-                imGroup.save(rf"Figures\BigGrouped\{picturesA[i]}.png")
-#                print("Nope")
-            imDS.close()
-            imTH.close()
-            imZS.close()
-            imA.close()
-
-        Stat=1
-        return Stat
-    
-    elif selection == "Ende":
-        Stat=2
-        return Stat
-    
 def compare(selection):
     Stat = 0
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
@@ -882,19 +529,11 @@ if __name__ == "__main__":
     if Boot != "Ende":
         while Boot != "Ende":
             Status = 0
-            Task = str(input("Korr | DWD | KopfdatenMW auswerten: KMW | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | Grouped: G | compare | merge | Ende \n"))
-            if Task == "KMW":
-                while Status != 2:
-                    selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
-                    #Status=KopfdatenMW(selection)
-                    if Status == 1:
-                        print(f"{selection} Done")
-                    elif Status == 2:
-                        print("KMW beendet")
-            elif Task == "K":
+            Task = str(input("Streudiagramme: Korr | Klimadaten: DWD | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | direkter graphischer Vergleich der Anlagen: compare | Zusammenführen der statistischen Analysen: merge | Ende \n"))
+            if Task == "K":
                 Status=0
                 while Status != 2:
-                    selection=str(input("(spear) | DS | TH | ZS | Anlage | (Alle)  | (Nutz) | (NutzTyp) | Ende \n"))
+                    selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
                     Status=Kopfdaten(selection)
                     if Status == 1:
                         print(f"{selection} Done")
@@ -920,14 +559,6 @@ if __name__ == "__main__":
                     Status=merge()
                     if Status == 2:
                         print("merge beendet")
-            elif Task == "G":
-                while Status != 2:
-                    selection=str(input("small | big | Ende \n"))
-                    Status=Grouped(selection)
-                    if Status == 1:
-                        print(f"{selection} Done")
-                    elif Status == 2:
-                        print("G beendet")
             elif Task =="DWD":
                 Status=0
                 while Status !=2:
@@ -945,12 +576,6 @@ if __name__ == "__main__":
             elif Task == "Ende":
                 Boot = str(input("Starten: type any string | Ende \n"))
 
-# important/used parts -> put in one program
-                # Shinozaki
-                # Kopfdaten (ohne Spear)
-                # Compare und merge
-                # DWD
-                # Korr
     
 
     
