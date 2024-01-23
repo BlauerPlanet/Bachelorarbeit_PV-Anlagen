@@ -8,10 +8,11 @@ import numpy as np
 from scipy import stats as st
 import statsmodels.stats.multitest as mt
 
-param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL", "mL2","mF","mR","mN","mM","mW","mTr","AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
+param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL","mF","mR","mN","mM","mW","mTr", "AntThero (Ti)", "n_Thero (Ti)", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
 vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
-staparam = ["mT","mL", "mL2","mF","mR","mN","mM","mW","mTr"]
-divparam=["AntThero", "AntThero (Ti)", "n_Thero (Ti)","AntHemi", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
+staparam = ["mT","mL","mF","mR","mN"]
+divparam=["AntThero (Ti)", "n_Thero (Ti)", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
+nutzparam=["mM","mW","mTr"]
 
 def Kopfdaten(selection):
     Stat = 0
@@ -243,13 +244,14 @@ def Shinozaki():
     Stat=2
     return Stat
 
-def compare(selection):
+def compare():
     Stat = 0
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
     for i in param:
         KP=pd.DataFrame(K.loc[f"{i}"])
 #        print(KP)
-        if selection == "DS-TH-ZS":     
+
+        def three():  
             DSM=[]
             DSH=[]
             DSS=[]
@@ -323,6 +325,9 @@ def compare(selection):
             elif i in staparam:
                 yADD=1.2-(yMIN%1)
                 ySUB=0.2+(yMIN%0.2)
+            elif i in nutzparam:
+                yADD=1.2-(yMIN%1)
+                ySUB=0.2+(yMIN%0.2)
             elif i in divparam:
                 if i == "Hs":
                     yADD=1.2-(yMIN%1)
@@ -377,10 +382,106 @@ def compare(selection):
             plt.boxplot(KPSDS, labels="S", showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
             plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="")
             plt.close()  
-        elif selection == "Ende": 
-            Stat=2
-            return Stat
-    Stat=1
+
+        def two():
+            DSM=[]
+            DSH=[]
+            DSS=[]
+            DSS1=[]
+            DSMList=["DSM","DSM.1","DSM.2","DSM.3","DSM.4","DSM.5","DSM.6"]
+            DSHList=["DSH","DSH.1","DSH.2","DSH.3","DSH.4","DSH.5","DSH.6"] 
+            DSSList=["DSS","DSS.1","DSS.2","DSS.3","DSS.4","DSS.5","DSS.6"]
+            for indMDS in DSMList:
+    #                print(KP.loc[f"{ind}"])
+                DSM.append(float(KP.loc[f"{indMDS}"]))
+            for indHDS in DSHList:
+                DSH.append(float(KP.loc[f"{indHDS}"]))
+            for indSDS in DSSList:
+                DSS1.append(float(KP.loc[f"{indSDS}"]))
+            
+            for iK in DSS1:
+                #print({str(iK).replace(".","",1).isdigit()})
+                if str(iK).replace(".","",1).isdigit():
+                    DSS.append(iK)
+
+            ZSM=[]
+            ZSH=[]
+            ZSS=[]
+            ZSMList=["ZSM","ZSM.1","ZSM.2","ZSM.3"]
+            ZSHList=["ZSH","ZSH.1","ZSH.2","ZSH.3"] 
+            ZSSList=["ZSS","ZSS.1","ZSS.2","ZSS.3"]
+            for indMZS in ZSMList:
+    #                print(KP.loc[f"{ind}"])
+                ZSM.append(float(KP.loc[f"{indMZS}"]))
+            for indHZS in ZSHList:
+                ZSH.append(float(KP.loc[f"{indHZS}"]))
+            for indSZS in ZSSList:
+                ZSS.append(float(KP.loc[f"{indSZS}"]))
+
+            KPMDS=pd.DataFrame(DSM)
+            KPHDS=pd.DataFrame(DSH)
+            KPSDS=pd.DataFrame(DSS)
+            KPMZS=pd.DataFrame(ZSM)
+            KPHZS=pd.DataFrame(ZSH)
+            KPSZS=pd.DataFrame(ZSS)
+            # KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
+            # pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")        
+            
+            yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
+            yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
+           
+            if i in nutzparam:
+                yADD=1.2-(yMIN%1)
+                ySUB=0.2+(yMIN%0.2)
+            
+            plt.figure()
+            ax1=plt.subplot(1,7,1, ylim=(yMIN-ySUB,yMAX+yADD))
+            if i in vegparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            elif i in staparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+            elif i in divparam:
+                if i == "Hs":
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                else:
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            
+            plt.title(f"{i} - DS", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPMDS, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax2=plt.subplot(1,7,2, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHDS, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax3=plt.subplot(1,7,3, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSDS, labels="S", showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
+            ax4=plt.subplot(1,7,5, sharey=ax1)
+            plt.title("ZS", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPMZS, labels="M", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})  
+            ax5=plt.subplot(1,7,6, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHZS, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax6=plt.subplot(1,7,7, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSZS, labels="S", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="")
+            plt.close()  
+
+        if i in staparam:
+            three()
+        elif i in vegparam:
+            three()
+        elif i in divparam:
+            three()
+        elif i in nutzparam:
+            two()
+
+    Stat=2
     return Stat
 
 def merge():
@@ -546,13 +647,11 @@ if __name__ == "__main__":
                     if Status == 2:
                         print("Shinozaki beendet")
             elif Task == "compare":
+                Status=0
                 while Status != 2:
-                        selection=str(input("DS-TH-ZS | Typ-Anl-Nutz | Ende \n"))
-                        Status=compare(selection)
-                        if Status == 1:
-                            print(f"{selection} Done")
-                        elif Status == 2:
-                            print("compare beendet")
+                        Status=compare()
+                if Status == 2:
+                    print("compare beendet")
             elif Task == "merge":
                 Status=0
                 while Status !=2:
