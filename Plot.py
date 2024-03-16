@@ -8,11 +8,12 @@ import numpy as np
 from scipy import stats as st
 import statsmodels.stats.multitest as mt
 
-param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL","mF","mR","mN","mM","mW","mTr", "AntThero (Ti)", "n_Thero (Ti)", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
+param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL","mF","mR","mN","mM","mW","mTr", "AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl", "Bruch_keinGras_Gras"]
 vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
 staparam = ["mT","mL","mF","mR","mN"]
-divparam=["AntThero (Ti)", "n_Thero (Ti)", "AntHemi (Ti)", "n_Hemi (Ti)","E","Hs","AbS","Artzahl"]
+divparam=["AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl","Bruch_keinGras_Gras"]
 nutzparam=["mM","mW","mTr"]
+paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der nicht Grasarten zu den Grasarten"}
 
 def Kopfdaten(selection):
     Stat = 0
@@ -48,16 +49,16 @@ def Kopfdaten(selection):
             KPS=pd.DataFrame(DSS)
             pd.DataFrame(data=[DSM,DSH,DSS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
 
-            KWlist=[]
-            KWlist.append(st.kruskal(KPM, KPH)[1][0])
-            KWlist.append(st.kruskal(KPM, KPS)[1][0])
-            KWlist.append(st.kruskal(KPH, KPS)[1][0])
+            #KWlist=[]
+            #KWlist.append(st.kruskal(KPM, KPH)[1][0])
+            #KWlist.append(st.kruskal(KPM, KPS)[1][0])
+            #KWlist.append(st.kruskal(KPH, KPS)[1][0])
             #print(KWlist)
             # np.std | ddof changes divisor -> ddof=1 -> divosr=N-1 => as is statgraphics
-            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0],st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]]
-            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0],"","", "","",""]
-            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0],"","", "","",""]
-            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std","KW","p","M-H","M-S","H-S"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
+            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0]] # st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]
+            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0]] # ,"","", "","",""
+            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0]] # ,"","", "","",""
+            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std"]).to_excel(f"XLSX\{selection}\{i}.xlsx")#,"KW","p","M-H","M-S","H-S"
             
             #print(f"{i} - {st.kruskal(DSM,DSH,DSS)} - [M-H,M-S,H-S] {mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0]}")
             #print(Mdata)
@@ -98,16 +99,16 @@ def Kopfdaten(selection):
             
             pd.DataFrame(data=[THM,THH,THS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
             
-            KWlist=[]
-            KWlist.append(st.kruskal(KPM, KPH)[1][0])
-            KWlist.append(st.kruskal(KPM, KPS)[1][0])
-            KWlist.append(st.kruskal(KPH, KPS)[1][0])
+            # KWlist=[]
+            # KWlist.append(st.kruskal(KPM, KPH)[1][0])
+            # KWlist.append(st.kruskal(KPM, KPS)[1][0])
+            # KWlist.append(st.kruskal(KPH, KPS)[1][0])
             #print(KWlist)
 
-            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0],st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]]
-            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0],"","", "","",""]
-            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0],"","", "","",""]
-            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std","KW","p","M-H","M-S","H-S"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
+            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0]] # ,st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]
+            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0]] # ,"","", "","",""
+            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0]] # ,"","", "","",""
+            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std"]).to_excel(f"XLSX\{selection}\{i}.xlsx") # ,"KW","p","M-H","M-S","H-S"
 
             #print(f"{i} - {st.kruskal(THM,THH,THS)}")
 
@@ -146,16 +147,16 @@ def Kopfdaten(selection):
             KPS=pd.DataFrame(ZSS)
             #print(f"{i} - {st.kruskal(ZSM,ZSH,ZSS)}")
             pd.DataFrame(data=[ZSM,ZSH,ZSS], index=["M","H","S"]).to_excel(f"XLSX\Korr\{selection}\{i}.xlsx")
-            KWlist=[]
-            KWlist.append(st.kruskal(KPM, KPH)[1][0])
-            KWlist.append(st.kruskal(KPM, KPS)[1][0])
-            KWlist.append(st.kruskal(KPH, KPS)[1][0])
+            # KWlist=[]
+            # KWlist.append(st.kruskal(KPM, KPH)[1][0])
+            # KWlist.append(st.kruskal(KPM, KPS)[1][0])
+            # KWlist.append(st.kruskal(KPH, KPS)[1][0])
             #print(KWlist)
 
-            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0],st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]]
-            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0],"","", "","",""]
-            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0],"","", "","",""]
-            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std","KW","p","M-H","M-S","H-S"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
+            Mdata=[i,len(KPM),np.mean(KPM)[0],np.median(KPM),np.std(KPM, ddof=1)[0]] #,st.kruskal(KPM,KPH,KPS)[0],st.kruskal(KPM,KPH,KPS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]
+            Hdata=[i,len(KPH),np.mean(KPH)[0],np.median(KPH),np.std(KPH, ddof=1)[0]] # ,"","", "","",""
+            Sdata=[i,len(KPS),np.mean(KPS)[0],np.median(KPS),np.std(KPS, ddof=1)[0]] # ,"","", "","",""
+            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["M","H","S"], columns=["Parameter","n","mean","median","std"]).to_excel(f"XLSX\{selection}\{i}.xlsx") #,"KW","p","M-H","M-S","H-S"]
 
             plt.figure()
             ax1=plt.subplot(1,3,1)
@@ -198,16 +199,16 @@ def Kopfdaten(selection):
 #            print(KPTH)
             #print(f"{i} - {st.kruskal(DS,TH,ZS)}")
             
-            KWlist=[]
-            KWlist.append(st.kruskal(KPDS, KPTH)[1][0])
-            KWlist.append(st.kruskal(KPDS, KPZS)[1][0])
-            KWlist.append(st.kruskal(KPTH, KPZS)[1][0])
+            # KWlist=[]
+            # KWlist.append(st.kruskal(KPDS, KPTH)[1][0])
+            # KWlist.append(st.kruskal(KPDS, KPZS)[1][0])
+            # KWlist.append(st.kruskal(KPTH, KPZS)[1][0])
 
-            Mdata=[i,len(KPDS),np.mean(KPDS)[0],np.median(KPDS),np.std(KPDS, ddof=1)[0],st.kruskal(KPDS,KPTH,KPZS)[0],st.kruskal(KPDS,KPTH,KPZS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]]
-            Hdata=[i,len(KPTH),np.mean(KPTH)[0],np.median(KPTH),np.std(KPTH, ddof=1)[0],"","", "","",""]
-            Sdata=[i,len(KPZS),np.mean(KPZS)[0],np.median(KPZS),np.std(KPZS, ddof=1)[0],"","", "","",""]
+            Mdata=[i,len(KPDS),np.mean(KPDS)[0],np.median(KPDS),np.std(KPDS, ddof=1)[0]] # ,st.kruskal(KPDS,KPTH,KPZS)[0],st.kruskal(KPDS,KPTH,KPZS)[1], mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][0],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][1],mt.multipletests(KWlist, alpha=0.05, method='bonferroni')[0][2]
+            Hdata=[i,len(KPTH),np.mean(KPTH)[0],np.median(KPTH),np.std(KPTH, ddof=1)[0]] # ,"","", "","",""
+            Sdata=[i,len(KPZS),np.mean(KPZS)[0],np.median(KPZS),np.std(KPZS, ddof=1)[0]] # ,"","", "","",""
 
-            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["DS","TH","ZS"], columns=["Parameter","n","mean","median","std","KW","p","DS-TH","DS-ZS","TH-ZS"]).to_excel(f"XLSX\{selection}\{i}.xlsx")
+            pd.DataFrame(data=[Mdata,Hdata,Sdata], index=["DS","TH","ZS"], columns=["Parameter","n","mean","median","std"]).to_excel(f"XLSX\{selection}\{i}.xlsx") # ,"KW","p","DS-TH","DS-ZS","TH-ZS"
             
             plt.figure()
             ax1=plt.subplot(1,3,1)
@@ -230,17 +231,39 @@ def Kopfdaten(selection):
     return Stat
 
 def Shinozaki():
+    ShinoSel=str(input("M+H - j/n? "))
     S=pd.read_excel("SORTstatistics.xlsx", sheet_name="Shinozaki - Anlage", header=2, index_col=0)
+    Anlagen=["TH","ZS","DS","Alle Anlagen"]
+
 #    print(S)
     plt.xticks(S.index, labels=[1,"",3,"",5,"",7,"",9,"",11,"",13,"",15,"",17,"",19,"",21])
     plt.plot(S["DS - S"], label="DS", marker="o")
     plt.plot(S["TH - S"], label="TH", marker="s")
     plt.plot(S["ZS - S"], label="ZS", marker="X")
+    plt.xlabel("Anzahl Untersuchungsflächen (n)")
+    plt.ylabel("Artzahl (n)")
     plt.legend()
     plt.title("Shinozaki-Kurve")
     plt.savefig(rf"Figures\Shinozaki.png", bbox_inches="tight")
 #    plt.show()
     plt.close()
+
+    for i in Anlagen:
+        SZ=pd.read_excel("ShinozakiMHS.xlsx", sheet_name=i, header=1, index_col=0)
+        plt.xticks(SZ.index, labels=SZ.index.values)
+        plt.xlabel("Anzahl Untersuchungsflächen (n)")
+        plt.ylabel("Artzahl (n)")
+        plt.plot(SZ["M"], label="M", marker="o")
+        plt.plot(SZ["H"], label="H", marker="s")
+        if i!="Alle Anlagen" and ShinoSel=="j":
+            plt.plot(SZ["M+H"], label="M+H", marker="X")
+        plt.plot(SZ["S"], label="S", marker="D")
+        plt.legend()
+        plt.title(f"Shinozaki-Kurve | {i}")
+        #plt.show()
+        plt.savefig(rf"Figures\Shinozaki-{i}.png", bbox_inches="tight")
+        plt.close()
+
     Stat=2
     return Stat
 
@@ -251,6 +274,7 @@ def compare():
     for i in param:
         KP=pd.DataFrame(K.loc[f"{i}"])
 #        print(KP)
+        print(i)
 
         def three():  
             DSM=[]
@@ -310,12 +334,20 @@ def compare():
             KPMZS=pd.DataFrame(ZSM)
             KPHZS=pd.DataFrame(ZSH)
             KPSZS=pd.DataFrame(ZSS)
-            KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
-            pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")
-            KPDSTHZSkwtest=[st.kruskal(KPMDS,KPMTH,KPMZS)[0],st.kruskal(KPMDS,KPMTH,KPMZS)[1],st.kruskal(KPHDS,KPHTH,KPHZS)[0],st.kruskal(KPHDS,KPHTH,KPHZS)[1],st.kruskal(KPSDS,KPSTH,KPSZS)[0],st.kruskal(KPSDS,KPSTH,KPSZS)[1]]
-            #print(f"{i} - {KPMDS}")
-            #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
-            pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
+            if i == "n_Pha": #ValueError: All numbers are identical in kruskal H: 0,0,0 but in U-test it works with H: 0,0?!
+                KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
+                pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")
+                KPDSTHZSkwtest=[st.kruskal(KPMDS,KPMTH,KPMZS)[0],st.kruskal(KPMDS,KPMTH,KPMZS)[1],"ValueError: All numbers are identical in kruskal","ValueError: All numbers are identical in kruskal",st.kruskal(KPSDS,KPSTH,KPSZS)[0],st.kruskal(KPSDS,KPSTH,KPSZS)[1]]
+                #print(f"{i} - {KPMDS}")
+                #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
+                pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
+            else:
+                KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
+                pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")
+                KPDSTHZSkwtest=[st.kruskal(KPMDS,KPMTH,KPMZS)[0],st.kruskal(KPMDS,KPMTH,KPMZS)[1],st.kruskal(KPHDS,KPHTH,KPHZS)[0],st.kruskal(KPHDS,KPHTH,KPHZS)[1],st.kruskal(KPSDS,KPSTH,KPSZS)[0],st.kruskal(KPSDS,KPSTH,KPSZS)[1]]
+                #print(f"{i} - {KPMDS}")
+                #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
+                pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
             
             yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
             yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
@@ -333,6 +365,11 @@ def compare():
                 if i == "Hs":
                     yADD=1.2-(yMIN%1)
                     ySUB=0.2+(yMIN%0.2)
+                elif i == "Bruch_keinGras_Gras":
+                    yADD=0
+                    ySUB=0
+                    yMAX=10
+                    yMIN=0
                 else:
                     yADD=15-(yMIN%10)
                     ySUB=5+(yMIN%5)
@@ -349,11 +386,14 @@ def compare():
                 if i == "Hs":
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                elif i=="Bruch_keinGras_Gras":
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(5))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(1))
                 else:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
-            
-            plt.title(f"{i} - TH", loc="left")
+            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.title(f"TH", loc="left")
             plt.boxplot(KPMTH, labels="M", widths=w,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax2=plt.subplot(1,11,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
@@ -381,7 +421,7 @@ def compare():
             ax9=plt.subplot(1,11,11, sharey=ax1)
             plt.tick_params("y", labelleft=False)
             plt.boxplot(KPSDS, labels="S", widths=w, showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
-            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="")
+            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="tight")
             plt.close()  
 
         def two():
@@ -425,12 +465,12 @@ def compare():
             KPMZS=pd.DataFrame(ZSM)
             KPHZS=pd.DataFrame(ZSH)
             KPSZS=pd.DataFrame(ZSS)
-            # KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
-            # pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")        
+            KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
+            pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")        
             
             yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
             yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
-           
+
             if i in nutzparam:
                 yADD=1.2-(yMIN%1)
                 ySUB=0.2+(yMIN%0.2)
@@ -451,12 +491,13 @@ def compare():
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
             
-            plt.title(f"{i} - DS", loc="left")
+            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.title(f" DS", loc="left")
             plt.tick_params("y", labelleft=True)
             plt.boxplot(KPMDS, labels="M", widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax2=plt.subplot(1,7,2, sharey=ax1)
             plt.tick_params("y", labelleft=False)
-            plt.boxplot(KPHDS, labels="H", showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            plt.boxplot(KPHDS, labels="H", widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax3=plt.subplot(1,7,3, sharey=ax1)
             plt.tick_params("y", labelleft=False)
             plt.boxplot(KPSDS, labels="S", widths=w, showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
@@ -470,7 +511,7 @@ def compare():
             ax6=plt.subplot(1,7,7, sharey=ax1)
             plt.tick_params("y", labelleft=False)
             plt.boxplot(KPSZS, labels="S", widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="")
+            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="tight")
             plt.close()  
 
         if i in staparam:
