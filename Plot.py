@@ -8,12 +8,14 @@ import numpy as np
 from scipy import stats as st
 import statsmodels.stats.multitest as mt
 
-param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mT","mL","mF","mR","mN","mM","mW","mTr", "AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl", "Bruch_keinGras_Gras"]
+param = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mL","mF","mR","mN","mM","mW","mTr", "AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl", "Bruch_keinGras_Gras"] #,"mT"
 vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
-staparam = ["mT","mL","mF","mR","mN"]
+staparam = ["mL","mF","mR","mN"]#"mT",
 divparam=["AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl","Bruch_keinGras_Gras"]
 nutzparam=["mM","mW","mTr"]
-paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der nicht Grasarten zu den Grasarten"}
+paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
+importantParam = ["Artzahl", "Bruch_keinGras_Gras", "mF","DMoos [%]","DStreu [%]","DKr [%]"]
+paramKorr = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mF","mR","mN","mM","mW", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"]
 
 def Kopfdaten(selection):
     Stat = 0
@@ -224,6 +226,65 @@ def Kopfdaten(selection):
             plt.savefig(rf"Figures\Kopfdaten\{selection}\{i}.png", bbox_inches="tight")
             plt.close()
 
+        elif selection == "AnlageFTyp":
+            DSM=[]
+            DSH=[]
+            DSS=[]
+            DSS1=[]
+            THM=[]
+            THH=[]
+            THS=[]
+            ZSM=[]
+            ZSH=[]
+            ZSS=[]
+            DSMList=['DSM', 'DSM.1', 'DSM.2', 'DSM.3', 'DSM.4', 'DSM.5', 'DSM.6']
+            DSHList=['DSH', 'DSH.1', 'DSH.2', 'DSH.3', 'DSH.4', 'DSH.5', 'DSH.6']
+            DSSList=['DSS', 'DSS.1', 'DSS.2', 'DSS.3', 'DSS.4', 'DSS.5', 'DSS.6']
+            THMList=['THM', 'THM.1', 'THM.2', 'THM.3', 'THM.4']
+            THHList=['THH', 'THH.1', 'THH.2', 'THH.3', 'THH.4']
+            THSList=['THS', 'THS.1', 'THS.2', 'THS.3', 'THS.4']
+            ZSMList=['ZSM', 'ZSM.1', 'ZSM.2', 'ZSM.3']
+            ZSHList=['ZSH', 'ZSH.1', 'ZSH.2', 'ZSH.3']
+            ZSSList=['ZSS', 'ZSS.1', 'ZSS.2', 'ZSS.3']
+
+            for indDSM in DSMList:
+#                print(KP.loc[f"{ind}"])
+                DSM.append(float(KP.loc[f"{indDSM}"]))
+            for indDSH in DSHList:
+                DSH.append(float(KP.loc[f"{indDSH}"]))
+            for indDSS in DSSList:
+                DSS1.append(float(KP.loc[f"{indDSS}"]))                
+            for indTHM in THMList:
+                THM.append(float(KP.loc[f"{indTHM}"]))
+            for indTHH in THHList:
+                THH.append(float(KP.loc[f"{indTHH}"]))
+            for indTHS in THSList:
+                THS.append(float(KP.loc[f"{indTHS}"])) 
+            for indZSM in ZSMList:
+                ZSM.append(float(KP.loc[f"{indZSM}"]))
+            for indZSH in ZSHList:
+                ZSH.append(float(KP.loc[f"{indZSH}"]))
+            for indZSS in ZSSList:
+                ZSS.append(float(KP.loc[f"{indZSS}"])) 
+            for iK in DSS1:
+                #print({str(iK).replace(".","",1).isdigit()})
+                if str(iK).replace(".","",1).isdigit():
+                    DSS.append(iK)
+
+            KPDSM=pd.DataFrame(DSM)
+            KPDSH=pd.DataFrame(DSH)
+            KPDSS=pd.DataFrame(DSS)
+            KPTHM=pd.DataFrame(THM)
+            KPTHH=pd.DataFrame(THH)
+            KPTHS=pd.DataFrame(THS)
+            KPZSM=pd.DataFrame(ZSM)
+            KPZSH=pd.DataFrame(ZSH)
+            KPZSS=pd.DataFrame(ZSS)
+
+            pd.DataFrame(data=[THM,ZSM,DSM], index=["TH","ZS","DS"]).to_excel(f"XLSX\Korr\M\{i}.xlsx")
+            pd.DataFrame(data=[THH,ZSH,DSH], index=["TH","ZS","DS"]).to_excel(f"XLSX\Korr\H\{i}.xlsx")
+            pd.DataFrame(data=[THS,ZSS,DSS], index=["TH","ZS","DS"]).to_excel(f"XLSX\Korr\S\{i}.xlsx")
+
         elif selection == "Ende":
             Stat=2
             return Stat
@@ -267,7 +328,7 @@ def Shinozaki():
     Stat=2
     return Stat
 
-def compare():
+def compareFTyp():
     Stat = 0
     w=0.5
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
@@ -341,6 +402,10 @@ def compare():
                 #print(f"{i} - {KPMDS}")
                 #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
                 pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
+                KPTHZSutest=[st.mannwhitneyu(KPMTH,KPMZS)[0],st.mannwhitneyu(KPMTH,KPMZS)[1],st.mannwhitneyu(KPHTH,KPHZS)[0],st.mannwhitneyu(KPHTH,KPHZS)[1],st.mannwhitneyu(KPSTH,KPSZS)[0],st.mannwhitneyu(KPSTH,KPSZS)[1]]
+                KPTHDSutest=[st.mannwhitneyu(KPMTH,KPMDS)[0],st.mannwhitneyu(KPMTH,KPMDS)[1],st.mannwhitneyu(KPHTH,KPHDS)[0],st.mannwhitneyu(KPHTH,KPHDS)[1],st.mannwhitneyu(KPSTH,KPSDS)[0],st.mannwhitneyu(KPSTH,KPSDS)[1]]
+                pd.DataFrame(data=[KPTHZSutest], index=[i], columns=["U: MTH-MZS","p: MTH-MZS","U: HTHS-HZS","p: HTH-HZS","U: STH-SZS","p: STH-SZS"]).to_excel(f"XLSX\THZS\{i}.xlsx")
+                pd.DataFrame(data=[KPTHDSutest], index=[i], columns=["U: MTH-MSS","p: MTH-MDS","U: HTH-HDS","p: HTH-HDS","U: STH-SDS","p: STH-SDS"]).to_excel(f"XLSX\THDS\{i}.xlsx")
             else:
                 KPDSZSutest=[st.mannwhitneyu(KPMDS,KPMZS)[0],st.mannwhitneyu(KPMDS,KPMZS)[1],st.mannwhitneyu(KPHDS,KPHZS)[0],st.mannwhitneyu(KPHDS,KPHZS)[1],st.mannwhitneyu(KPSDS,KPSZS)[0],st.mannwhitneyu(KPSDS,KPSZS)[1]]
                 pd.DataFrame(data=[KPDSZSutest], index=[i], columns=["U: MDS-MZS","p: MDS-MZS","U: HDS-HZS","p: HDS-HZS","U: SDS-SZS","p: SDS-SZS"]).to_excel(f"XLSX\DSZS\{i}.xlsx")
@@ -348,7 +413,11 @@ def compare():
                 #print(f"{i} - {KPMDS}")
                 #print(f"{i} - {max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))}")
                 pd.DataFrame(data=[KPDSTHZSkwtest], index=[i], columns=["KW: M-M","p: M-M","KW: H-H","p: H-H","KW: S-S","p: S-S"]).to_excel(f"XLSX\DSTHZS\{i}.xlsx")
-            
+                KPTHZSutest=[st.mannwhitneyu(KPMTH,KPMZS)[0],st.mannwhitneyu(KPMTH,KPMZS)[1],st.mannwhitneyu(KPHTH,KPHZS)[0],st.mannwhitneyu(KPHTH,KPHZS)[1],st.mannwhitneyu(KPSTH,KPSZS)[0],st.mannwhitneyu(KPSTH,KPSZS)[1]]
+                KPTHDSutest=[st.mannwhitneyu(KPMTH,KPMDS)[0],st.mannwhitneyu(KPMTH,KPMDS)[1],st.mannwhitneyu(KPHTH,KPHDS)[0],st.mannwhitneyu(KPHTH,KPHDS)[1],st.mannwhitneyu(KPSTH,KPSDS)[0],st.mannwhitneyu(KPSTH,KPSDS)[1]]
+                pd.DataFrame(data=[KPTHZSutest], index=[i], columns=["U: MTH-MZS","p: MTH-MZS","U: HTHS-HZS","p: HTH-HZS","U: STH-SZS","p: STH-SZS"]).to_excel(f"XLSX\THZS\{i}.xlsx")
+                pd.DataFrame(data=[KPTHDSutest], index=[i], columns=["U: MTH-MSS","p: MTH-MDS","U: HTH-HDS","p: HTH-HDS","U: STH-SDS","p: STH-SDS"]).to_excel(f"XLSX\THDS\{i}.xlsx")
+
             yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
             yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
            
@@ -387,8 +456,8 @@ def compare():
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
                 elif i=="Bruch_keinGras_Gras":
-                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(5))
-                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.5))
                 else:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
@@ -421,7 +490,12 @@ def compare():
             ax9=plt.subplot(1,11,11, sharey=ax1)
             plt.tick_params("y", labelleft=False)
             plt.boxplot(KPSDS, labels="S", widths=w, showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
-            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="tight")
+            if i=="Bruch_keinGras_Gras":
+                ax1.get_yticklabels()[2].set_color("red")
+                ax4.get_yticklabels()[2].set_color("red")
+                ax7.get_yticklabels()[2].set_color("red")
+                plt.text(-14.5, -1.5, "< 1: mehr Grasarten | = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten | > 1: mehr Nicht-Grasarten")
+            plt.savefig(rf"Figures\Compare\MHS\{i}.png", bbox_inches="tight")
             plt.close()  
 
         def two():
@@ -511,7 +585,256 @@ def compare():
             ax6=plt.subplot(1,7,7, sharey=ax1)
             plt.tick_params("y", labelleft=False)
             plt.boxplot(KPSZS, labels="S", widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
-            plt.savefig(rf"Figures\Compare\{i}.png", bbox_inches="tight")
+            plt.savefig(rf"Figures\Compare\MHS\{i}.png", bbox_inches="tight")
+            plt.close()  
+
+        if i in staparam:
+            three()
+        elif i in vegparam:
+            three()
+        elif i in divparam:
+            three()
+        elif i in nutzparam:
+            two()
+
+    Stat=2
+    return Stat
+
+def compareAnlagen():
+    Stat = 0
+    w=0.5
+    K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
+    for i in param:
+        KP=pd.DataFrame(K.loc[f"{i}"])
+#        print(KP)
+        print(i)
+
+        def three():  
+            DSM=[]
+            DSH=[]
+            DSS=[]
+            DSS1=[]
+            DSMList=["DSM","DSM.1","DSM.2","DSM.3","DSM.4","DSM.5","DSM.6"]
+            DSHList=["DSH","DSH.1","DSH.2","DSH.3","DSH.4","DSH.5","DSH.6"] 
+            DSSList=["DSS","DSS.1","DSS.2","DSS.3","DSS.4","DSS.5","DSS.6"]
+            for indMDS in DSMList:
+    #                print(KP.loc[f"{ind}"])
+                DSM.append(float(KP.loc[f"{indMDS}"]))
+            for indHDS in DSHList:
+                DSH.append(float(KP.loc[f"{indHDS}"]))
+            for indSDS in DSSList:
+                DSS1.append(float(KP.loc[f"{indSDS}"]))
+            
+            for iK in DSS1:
+                #print({str(iK).replace(".","",1).isdigit()})
+                if str(iK).replace(".","",1).isdigit():
+                    DSS.append(iK)
+            
+            THM=[]
+            THH=[]
+            THS=[]
+            THMList=["THM","THM.1","THM.2","THM.3","THM.4"]
+            THHList=["THH","THH.1","THH.2","THH.3","THH.4"] 
+            THSList=["THS","THS.1","THS.2","THS.3","THS.4"]
+            for indMTH in THMList:
+    #                print(KP.loc[f"{ind}"])
+                THM.append(float(KP.loc[f"{indMTH}"]))
+            for indHTH in THHList:
+                THH.append(float(KP.loc[f"{indHTH}"]))
+            for indSTH in THSList:
+                THS.append(float(KP.loc[f"{indSTH}"]))
+
+            ZSM=[]
+            ZSH=[]
+            ZSS=[]
+            ZSMList=["ZSM","ZSM.1","ZSM.2","ZSM.3"]
+            ZSHList=["ZSH","ZSH.1","ZSH.2","ZSH.3"] 
+            ZSSList=["ZSS","ZSS.1","ZSS.2","ZSS.3"]
+            for indMZS in ZSMList:
+    #                print(KP.loc[f"{ind}"])
+                ZSM.append(float(KP.loc[f"{indMZS}"]))
+            for indHZS in ZSHList:
+                ZSH.append(float(KP.loc[f"{indHZS}"]))
+            for indSZS in ZSSList:
+                ZSS.append(float(KP.loc[f"{indSZS}"]))
+
+            KPMDS=pd.DataFrame(DSM)
+            KPHDS=pd.DataFrame(DSH)
+            KPSDS=pd.DataFrame(DSS)
+            KPMTH=pd.DataFrame(THM)
+            KPHTH=pd.DataFrame(THH)
+            KPSTH=pd.DataFrame(THS)
+            KPMZS=pd.DataFrame(ZSM)
+            KPHZS=pd.DataFrame(ZSH)
+            KPSZS=pd.DataFrame(ZSS)
+            
+            yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
+            yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
+           
+            if i in vegparam:
+                yADD=15-(math.ceil(yMAX)%10) 
+                ySUB=5+(yMIN%5)
+            elif i in staparam:
+                yADD=1.2-(yMIN%1)
+                ySUB=0.2+(yMIN%0.2)
+            elif i in nutzparam:
+                yADD=1.2-(yMIN%1)
+                ySUB=0.2+(yMIN%0.2)
+            elif i in divparam:
+                if i == "Hs":
+                    yADD=1.2-(yMIN%1)
+                    ySUB=0.2+(yMIN%0.2)
+                elif i == "Bruch_keinGras_Gras":
+                    yADD=0
+                    ySUB=0
+                    yMAX=10
+                    yMIN=0
+                else:
+                    yADD=15-(yMIN%10)
+                    ySUB=5+(yMIN%5)
+            
+            plt.figure()
+            ax1=plt.subplot(1,11,1, ylim=(yMIN-ySUB,yMAX+yADD))
+            if i in vegparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            elif i in staparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+            elif i in divparam:
+                if i == "Hs":
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                elif i=="Bruch_keinGras_Gras":
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.5))
+                else:
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.title(f"M", loc="left")
+            plt.boxplot(KPMTH, labels=["TH"], widths=w,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax2=plt.subplot(1,11,2, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPMZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax3=plt.subplot(1,11,3, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPMDS, labels=["DS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax4=plt.subplot(1,11,5, sharey=ax1)
+            plt.title("H", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPHTH, labels=["TH"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})  
+            ax5=plt.subplot(1,11,6, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax6=plt.subplot(1,11,7, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHDS, labels=["DS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax7=plt.subplot(1,11,9, sharey=ax1)
+            plt.title("S", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPSTH, labels=["TH"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax8=plt.subplot(1,11,10, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax9=plt.subplot(1,11,11, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSDS, labels=["DS"], widths=w, showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
+            if i=="Bruch_keinGras_Gras":
+                ax1.get_yticklabels()[2].set_color("red")
+                ax4.get_yticklabels()[2].set_color("red")
+                ax7.get_yticklabels()[2].set_color("red")
+                plt.text(-14.5, -1.5, "< 1: mehr Grasarten | = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten | > 1: mehr Nicht-Grasarten")
+            plt.savefig(rf"Figures\Compare\THZSDS\{i}.png", bbox_inches="tight")
+            plt.close()  
+
+        def two():
+            DSM=[]
+            DSH=[]
+            DSS=[]
+            DSS1=[]
+            DSMList=["DSM","DSM.1","DSM.2","DSM.3","DSM.4","DSM.5","DSM.6"]
+            DSHList=["DSH","DSH.1","DSH.2","DSH.3","DSH.4","DSH.5","DSH.6"] 
+            DSSList=["DSS","DSS.1","DSS.2","DSS.3","DSS.4","DSS.5","DSS.6"]
+            for indMDS in DSMList:
+    #                print(KP.loc[f"{ind}"])
+                DSM.append(float(KP.loc[f"{indMDS}"]))
+            for indHDS in DSHList:
+                DSH.append(float(KP.loc[f"{indHDS}"]))
+            for indSDS in DSSList:
+                DSS1.append(float(KP.loc[f"{indSDS}"]))
+            
+            for iK in DSS1:
+                #print({str(iK).replace(".","",1).isdigit()})
+                if str(iK).replace(".","",1).isdigit():
+                    DSS.append(iK)
+
+            ZSM=[]
+            ZSH=[]
+            ZSS=[]
+            ZSMList=["ZSM","ZSM.1","ZSM.2","ZSM.3"]
+            ZSHList=["ZSH","ZSH.1","ZSH.2","ZSH.3"] 
+            ZSSList=["ZSS","ZSS.1","ZSS.2","ZSS.3"]
+            for indMZS in ZSMList:
+    #                print(KP.loc[f"{ind}"])
+                ZSM.append(float(KP.loc[f"{indMZS}"]))
+            for indHZS in ZSHList:
+                ZSH.append(float(KP.loc[f"{indHZS}"]))
+            for indSZS in ZSSList:
+                ZSS.append(float(KP.loc[f"{indSZS}"]))
+
+            KPMDS=pd.DataFrame(DSM)
+            KPHDS=pd.DataFrame(DSH)
+            KPSDS=pd.DataFrame(DSS)
+            KPMZS=pd.DataFrame(ZSM)
+            KPHZS=pd.DataFrame(ZSH)
+            KPSZS=pd.DataFrame(ZSS)
+            
+            yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
+            yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
+
+            if i in nutzparam:
+                yADD=1.2-(yMIN%1)
+                ySUB=0.2+(yMIN%0.2)
+            
+            plt.figure()
+            ax1=plt.subplot(1,8,1, ylim=(yMIN-ySUB,yMAX+yADD))
+            if i in vegparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            elif i in staparam:
+                ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+            elif i in divparam:
+                if i == "Hs":
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                else:
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            
+            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.title(f"M", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPMZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax2=plt.subplot(1,8,2, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPMDS, labels=["DS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax3=plt.subplot(1,8,4, sharey=ax1)
+            plt.title("H", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPHZS, labels=["ZS"], widths=w, showmeans=True, medianprops={"color":"blue"},meanprops={"marker":"+"})
+            ax4=plt.subplot(1,8,5, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPHDS, labels=["DS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})  
+            ax5=plt.subplot(1,8,7, sharey=ax1)
+            plt.title("S", loc="left")
+            plt.tick_params("y", labelleft=True)
+            plt.boxplot(KPSZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            ax6=plt.subplot(1,8,8, sharey=ax1)
+            plt.tick_params("y", labelleft=False)
+            plt.boxplot(KPSDS, labels=["DS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
+            plt.savefig(rf"Figures\Compare\THZSDS\{i}.png", bbox_inches="tight")
             plt.close()  
 
         if i in staparam:
@@ -536,6 +859,8 @@ def merge():
     pathNutzTyp=r"XLSX\NutzTyp"
     pathDSZS=r"XLSX\DSZS"
     pathDSTHZS=r"XLSX\DSTHZS"
+    pathTHZS=r"XLSX\THZS"
+    pathTHDS=r"XLSX\THDS"
 
     dfDS=pd.DataFrame()
     dfTH=pd.DataFrame()
@@ -546,6 +871,8 @@ def merge():
     dfNutzTyp=pd.DataFrame()
     dfDSZS=pd.DataFrame()
     dfDSTHZS=pd.DataFrame()
+    dfTHZS=pd.DataFrame()
+    dfTHDS=pd.DataFrame()
 
     for file1 in listdir(pathDS):
         dfDS = dfDS.append(pd.read_excel(f"{pathDS}\{file1}", header=0, index_col=0))
@@ -565,6 +892,10 @@ def merge():
         dfDSZS = dfDSZS.append(pd.read_excel(f"{pathDSZS}\{file8}", header=0, index_col=0))
     for file9 in listdir(pathDSTHZS):
         dfDSTHZS = dfDSTHZS.append(pd.read_excel(f"{pathDSTHZS}\{file9}", header=0, index_col=0))
+    for file10 in listdir(pathTHZS):
+        dfTHZS = dfTHZS.append(pd.read_excel(f"{pathTHZS}\{file10}", header=0, index_col=0))
+    for file11 in listdir(pathTHDS):
+        dfTHDS = dfTHDS.append(pd.read_excel(f"{pathTHDS}\{file11}", header=0, index_col=0))
     with pd.ExcelWriter("XLSX\PythonSTATS.xlsx", engine="openpyxl",mode="a", if_sheet_exists="replace") as writer:
         dfDS.to_excel(writer, sheet_name="KDS")
         dfTH.to_excel(writer, sheet_name="KTH")
@@ -575,6 +906,8 @@ def merge():
         # dfNutzTyp.to_excel(writer, sheet_name="KNutzTyp")
         dfDSZS.to_excel(writer, sheet_name="DSZS")
         dfDSTHZS.to_excel(writer, sheet_name="DSTHZS")
+        dfTHZS.to_excel(writer, sheet_name="THZS")
+        dfTHDS.to_excel(writer, sheet_name="THDS")
         
     Stat=2
     return Stat
@@ -646,18 +979,63 @@ def Korr(selection):
         path=r"XLSX\Korr\TH"
     elif selection == "ZS":
         path=r"XLSX\Korr\ZS"
+    elif selection == "M":
+        path=r"XLSX\Korr\M"
+    elif selection == "H":
+        path=r"XLSX\Korr\H"
+    elif selection == "S":
+        path=r"XLSX\Korr\S"
+    elif selection == "All": 
+        # K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
+        # for i in paramKorr:
+        #     pd.DataFrame(K.loc[f"{i}"]).to_excel(f"XLSX\Korr\All\{i}.xlsx")
+        # path=r"XLSX\Korr\All"
+        pTH=r"XLSX\Korr\TH"
+        pZS=r"XLSX\Korr\ZS"
+        pDS=r"XLSX\Korr\DS"
     elif selection == "Ende": 
         Stat=2
         return Stat
 
-    for ix in param:
-        for iy in param:
+    for ix in paramKorr: #austauschbar in param für andere selections
+        for iy in paramKorr: #austauschbar in param für andere selections
             if ix != iy:
-                dfx=pd.read_excel(rf"{path}\{ix}.xlsx", index_col=0)
-                dfy=pd.read_excel(rf"{path}\{iy}.xlsx", index_col=0)
-                plt.scatter(dfx.loc["M"],dfy.loc["M"], label="M", marker="x", c="r")
-                plt.scatter(dfx.loc["H"],dfy.loc["H"], label="H", marker="o", c="g")
-                plt.scatter(dfx.loc["S"],dfy.loc["S"], label="S", marker="s", c="b")
+                if selection == "TH" or selection == "ZS" or selection == "DS" or selection == "M" or selection == "H" or selection == "S":
+                    dfx=pd.read_excel(rf"{pTH}\{ix}.xlsx", index_col=0)
+                    dfy=pd.read_excel(rf"{pTH}\{iy}.xlsx", index_col=0)
+                elif selection == "All":
+                    dfxTH=pd.read_excel(rf"{pTH}\{ix}.xlsx", index_col=0)
+                    dfyTH=pd.read_excel(rf"{pTH}\{iy}.xlsx", index_col=0)
+                    dfxZS=pd.read_excel(rf"{pZS}\{ix}.xlsx", index_col=0)
+                    dfyZS=pd.read_excel(rf"{pZS}\{iy}.xlsx", index_col=0)
+                    dfxDS=pd.read_excel(rf"{pDS}\{ix}.xlsx", index_col=0)
+                    dfyDS=pd.read_excel(rf"{pDS}\{iy}.xlsx", index_col=0)
+
+                    print(f"{iy}({ix})")              
+                    plt.scatter(dfxDS.loc["M"],dfyDS.loc["M"], label="DS", marker="s", c="b")
+                    plt.scatter(dfxDS.loc["S"],dfyDS.loc["S"], label="_DS", marker="s", c="b")                       
+                    plt.scatter(dfxDS.loc["H"],dfyDS.loc["H"], label="_DS", marker="s", c="b")
+
+                    plt.scatter(dfxTH.loc["M"],dfyTH.loc["M"], label="TH", marker="x", c="r")
+                    plt.scatter(dfxTH.loc["H"],dfyTH.loc["H"], label="_TH", marker="x", c="r")
+                    plt.scatter(dfxTH.loc["S"],dfyTH.loc["S"], label="_TH", marker="x", c="r")
+
+                    plt.scatter(dfxZS.loc["M"],dfyZS.loc["M"], label="_ZS", marker="o", s=10, c="g")
+                    plt.scatter(dfxZS.loc["H"],dfyZS.loc["H"], label="ZS", marker="o", s=10, c="g")
+                    plt.scatter(dfxZS.loc["S"],dfyZS.loc["S"], label="_ZS", marker="o", s=10, c="g")
+ 
+                if selection == "TH" or selection == "ZS" or selection == "DS":
+                    print(f"{iy}({ix})")
+                    plt.title(f"Anlage {selection}")                    
+                    plt.scatter(dfx.loc["M"],dfy.loc["M"], label="M", marker="x", c="r")
+                    plt.scatter(dfx.loc["H"],dfy.loc["H"], label="H", marker="o", c="g")
+                    plt.scatter(dfx.loc["S"],dfy.loc["S"], label="S", marker="s", c="b")
+                elif selection == "M" or selection == "H" or selection == "S":
+                    print(f"{iy}({ix})")
+                    plt.title(f"Flächentyp {selection}")
+                    plt.scatter(dfx.loc["TH"],dfy.loc["TH"], label="TH", marker="x", c="r")
+                    plt.scatter(dfx.loc["ZS"],dfy.loc["ZS"], label="ZS", marker="o", c="g")
+                    plt.scatter(dfx.loc["DS"],dfy.loc["DS"], label="DS", marker="s", c="b")                                                       
                 plt.xlabel(ix)
                 plt.ylabel(iy)
                 plt.legend()
@@ -667,16 +1045,69 @@ def Korr(selection):
     Stat=1
     return Stat
 
+def Discussion():
+    D = pd.read_excel("XLSX\PythonSTATS.xlsx", sheet_name="Mediane", header=0, index_col=0)  
+    
+    plt.figure()
+    plt.subplot(6,1,1, ylim=[min(min(D.loc["Artzahl DS"]), min(D.loc["Artzahl ZS"]), min(D.loc["Artzahl TH"]))-1, max(max(D.loc["Artzahl DS"]), max(D.loc["Artzahl ZS"]), max(D.loc["Artzahl TH"]))+1])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["Artzahl DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["Artzahl TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["Artzahl ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[0]]}", rotation="horizontal", ha="right")
+    plt.legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower right", ncol=3)
+   
+    plt.subplot(6,1,3, ylim=[min(min(D.loc["mF DS"]), min(D.loc["mF ZS"]), min(D.loc["mF TH"]))-1, max(max(D.loc["mF DS"]), max(D.loc["mF ZS"]), max(D.loc["mF TH"]))+1])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["mF DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["mF TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["mF ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[2]]}", rotation="horizontal", ha="right")
+    
+    plt.subplot(6,1,2, ylim=[min(min(D.loc["ngg DS"]), min(D.loc["ngg ZS"]), min(D.loc["ngg TH"]))-1, max(max(D.loc["ngg DS"]), max(D.loc["ngg ZS"]), max(D.loc["ngg TH"]))+1])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["ngg DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["ngg TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["ngg ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[1]]}", rotation="horizontal", ha="right")
+    
+    plt.subplot(6,1,4, ylim=[min(min(D.loc["DKr DS"]), min(D.loc["DKr ZS"]), min(D.loc["DKr TH"]))-5, max(max(D.loc["DKr DS"]), max(D.loc["DKr ZS"]), max(D.loc["DKr TH"]))+5])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["DKr DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["DKr TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["DKr ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[5]]}", rotation="horizontal", ha="right")
+    
+    plt.subplot(6,1,5, ylim=[min(min(D.loc["DMoos DS"]), min(D.loc["DMoos ZS"]), min(D.loc["DMoos TH"]))-1, max(max(D.loc["DMoos DS"]), max(D.loc["DMoos ZS"]), max(D.loc["DMoos TH"]))+1])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["DMoos DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["DMoos TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["DMoos ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[3]]}", rotation="horizontal", ha="right")
+    
+    plt.subplot(6,1,6, ylim=[min(min(D.loc["DStreu DS"]), min(D.loc["DStreu ZS"]), min(D.loc["DStreu TH"]))-1, max(max(D.loc["DStreu DS"]), max(D.loc["DStreu ZS"]), max(D.loc["DStreu TH"]))+1])
+    plt.xticks([0,1,2], labels=["M","H","S"])
+    plt.plot(D.loc["DStreu DS"], label="DS", marker="o", color="blue", markersize="5")
+    plt.plot(D.loc["DStreu TH"], label="TH", marker="s", color="orange", markersize="5")
+    plt.plot(D.loc["DStreu ZS"], label="ZS", marker="X", color="green", markersize="5")
+    plt.ylabel(f"{paramDict[importantParam[4]]}", rotation="horizontal", ha="right")
+
+    plt.savefig(rf"Figures\Final.png", bbox_inches="tight")
+    #plt.show()
+    plt.close()
+    Status=2
+    return Status
+
 if __name__ == "__main__":
     Boot = str(input("Starten: type any string | Ende \n"))
     if Boot != "Ende":
         while Boot != "Ende":
             Status = 0
-            Task = str(input("Streudiagramme: Korr | Klimadaten: DWD | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | direkter graphischer Vergleich der Anlagen: compare | Zusammenführen der statistischen Analysen: merge | Ende \n"))
+            Task = str(input("Discussion | Streudiagramme: Korr | Klimadaten: DWD | Kopfdaten auswerten: K | Shinozaki-Kurven: SK | direkter graphischer Vergleich der Anlagen: compare | Zusammenführen der statistischen Analysen: merge | Ende \n"))
             if Task == "K":
                 Status=0
                 while Status != 2:
-                    selection=str(input("DS | TH | ZS | Anlage | Ende \n"))
+                    selection=str(input("DS | TH | ZS | Anlage | AnlageFTyp | Ende \n"))
                     Status=Kopfdaten(selection)
                     if Status == 1:
                         print(f"{selection} Done")
@@ -688,10 +1119,20 @@ if __name__ == "__main__":
                     Status=Shinozaki()
                     if Status == 2:
                         print("Shinozaki beendet")
+            elif Task == "Discussion":
+                Status=0
+                while Status !=2:
+                    Status=Discussion()
+                    if Status == 2:
+                        print("Discussion beendet")
             elif Task == "compare":
                 Status=0
                 while Status != 2:
-                        Status=compare()
+                        selection=str(input("MHS | THZSDS \n"))
+                        if selection == "MHS":
+                            Status=compareFTyp()
+                        elif selection == "THZSDS":
+                            Status=compareAnlagen()
                 if Status == 2:
                     print("compare beendet")
             elif Task == "merge":
@@ -708,7 +1149,7 @@ if __name__ == "__main__":
                         print("DWD beendet")
             elif Task =="Korr":
                 while Status !=2:
-                    selection=str(input("DS | TH | ZS | Ende \n"))
+                    selection=str(input("All | DS | TH | ZS | M | H | S | Ende \n"))
                     Status=Korr(selection)
                     if Status == 1:
                         print(f"{selection} Done")
