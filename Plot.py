@@ -13,7 +13,10 @@ vegparam = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
 staparam = ["mL","mF","mR","mN"]#"mT",
 divparam=["AntThero [%]", "n_Thero", "AntHemi [%]", "n_Hemi","n_Geo","n_Cha","n_Pha","E [%]","Hs","AbS","Artzahl","Bruch_keinGras_Gras"]
 nutzparam=["mM","mW","mTr"]
-paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
+#paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
+# Anpassung Länge wegen y-Achsengröße
+paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der\n Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der\n Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
+
 importantParam = ["Artzahl", "Bruch_keinGras_Gras", "mF","DMoos [%]","DStreu [%]","DKr [%]"]
 paramKorr = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mF","mR","mN","mM","mW", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"]
 
@@ -461,7 +464,8 @@ def compareFTyp():
                 else:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
-            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            #plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.ylabel(f"{paramDict[i]}", weight="bold")
             plt.title(f"TH", loc="left")
             plt.boxplot(KPMTH, labels="M", widths=w,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax2=plt.subplot(1,11,2, sharey=ax1)
@@ -565,7 +569,8 @@ def compareFTyp():
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
             
-            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            #plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.ylabel(f"{paramDict[i]}", weight="bold")
             plt.title(f" DS", loc="left")
             plt.tick_params("y", labelleft=True)
             plt.boxplot(KPMDS, labels="M", widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
@@ -711,7 +716,8 @@ def compareAnlagen():
                 else:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
-            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            #plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.ylabel(f"{paramDict[i]}", weight="bold")            
             plt.title(f"M", loc="left")
             plt.boxplot(KPMTH, labels=["TH"], widths=w,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
             ax2=plt.subplot(1,11,2, sharey=ax1)
@@ -813,7 +819,8 @@ def compareAnlagen():
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
             
-            plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            #plt.suptitle(f"{paramDict[i]}\n", ha="center", weight="bold")
+            plt.ylabel(f"{paramDict[i]}", weight="bold")
             plt.title(f"M", loc="left")
             plt.tick_params("y", labelleft=True)
             plt.boxplot(KPMZS, labels=["ZS"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"})
