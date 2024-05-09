@@ -5,7 +5,7 @@ Python Skript, verarbeitete Daten und Rohdaten zur Bachelorarbeit
 - engl.: Analysis of the vegetation of three ground-mounted photovoltaic systems (PV-FFA) in the Freiberg area - effects of the modules and utilization
 
 ## Abbildungen
-
+die Karten des Untersuchungsgebietes und der Anlagen und die Überblicksgrafik (Abb. 53)
 ## Daten\SORT_Tabellen
 ### SORT Tabellendatei für die einzelnen Anlagen:
 - Tannenhübel: TH.stf
