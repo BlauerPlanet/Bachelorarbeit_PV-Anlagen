@@ -26,5 +26,9 @@ die Karten des Untersuchungsgebietes und der Anlagen und die Überblicksgrafik (
 - StatFolio mit den zur Untersuchung benötigten Daten: KorrelationenALL.SGP
 - ErgebnisTabellen (interaktives Dokument): SpearmanFINAl.xlsx
 
-
-
+## Lizenz
+Alle Rechte liegen beim Autor. Weiterverwendung der Daten ist nur nach Zustimmung durch diesen erlaubt. 
+Kontakt: BlauerPlanet@magenta.de
+## License
+All rights remain by the author. Further use of the data is only permitted with the consent of the author. 
+Contact: BlauerPlanet@magenta.de
