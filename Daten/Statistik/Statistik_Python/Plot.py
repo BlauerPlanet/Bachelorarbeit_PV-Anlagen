@@ -868,7 +868,7 @@ def compareFECO():
     w=0.6
     K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
 
-    FECOparam = ["mW","Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mL","mF","mN", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"] 
+    FECOparam = ["mW","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mL","mF","mN", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"] 
     FECOvegparam = ["DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
     FECOstaparam = ["mL","mF","mN"]
     FECOdivparam=["AntThero [%]", "AntHemi [%]","Artzahl","Bruch_keinGras_Gras"]
@@ -946,45 +946,28 @@ def compareFECO():
                 KPHZS=pd.DataFrame(ZSH)
                 KPSZS=pd.DataFrame(ZSS)
                 
-                yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
-                yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
-            
-                if i in FECOvegparam:
-                    yADD=15-(math.ceil(yMAX)%10) 
-                    ySUB=5+(yMIN%5)
-                elif i in FECOstaparam:
-                    yADD=1.2-(yMIN%1)
-                    ySUB=0.2+(yMIN%0.2)
-                elif i in FECOdivparam:
-                    if i == "Hs":
-                        yADD=1.2-(yMIN%1)
-                        ySUB=0.2+(yMIN%0.2)
-                    elif i == "Bruch_keinGras_Gras":
-                        yADD=0
-                        ySUB=0
-                        yMAX=10
-                        yMIN=0
-                    else:
-                        yADD=15-(yMIN%10)
-                        ySUB=5+(yMIN%5)
-                
                 fig, ax1=plt.subplots() #ylim=(yMIN-ySUB,yMAX+yADD)
                 if i in FECOvegparam:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+                    ax1.set_ylim(bottom=-4, top=104)
                 elif i in FECOstaparam:
                     ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
                     ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                    ax1.set_ylim(bottom=3, top=8)
                 elif i in FECOdivparam:
-                    if i == "Hs":
-                        ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
-                        ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
-                    elif i=="Bruch_keinGras_Gras":
+                    if i=="Bruch_keinGras_Gras":
                         ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
                         ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.5))
+                        ax1.set_ylim(bottom=-0.3, top=8.4)
+                    elif i =="Artzahl":
+                        ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                        ax1.yaxis.set_minor_locator(ticker.MultipleLocator(1))
+                        ax1.set_ylim(bottom=5, top=23)
                     else:
                         ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
                         ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+                        ax1.set_ylim(bottom=-4, top=104)
                 ax1.set_ylabel(f"{paramDictFECO[i]}", weight="bold")
                 #font-size:13
                 ax1.set_title("          TH", loc="left")
@@ -1005,7 +988,7 @@ def compareFECO():
                     plt.text(-0.3, -2, "< 1: mehr Grasarten | > 1: mehr Nicht-Grasarten\n = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten")
                     # font-size:10
                     # plt.text(-2.5, -1.5, "< 1: mehr Grasarten | = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten | > 1: mehr Nicht-Grasarten")
-                plt.savefig(rf"Figures\FECO\{i}.png", bbox_inches="tight")
+                plt.savefig(rf"D:\Daten_Noah\Desktop_Dateien\Studium_Freiberg\Study\FECO\finalPlots\{i}.png", bbox_inches="tight")
                 plt.close()  
 
             if i in FECOstaparam:
@@ -1045,6 +1028,9 @@ def compareFECO():
                 ZSS.append(float(KP.loc[f"{indSZS}"]))   
      
             fig, ax1=plt.subplots()
+            ax1.set_ylim(bottom=3, top=8)
+            ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+            ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
             ax1.set_ylabel(f"{paramDictFECO[i]}", weight="bold")
             #font-size: 13
             ax1.set_title("                TH", loc="left")
@@ -1055,7 +1041,7 @@ def compareFECO():
             ax1.boxplot([THM, THH, THS], labels=["M","H","S"], widths=0.5,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[0,1,2])
             ax1.axvline(x=2.5, ls="--", c=(0.6,0.6,0.6))
             ax1.boxplot([ZSM, ZSH, ZSS], labels=["M","H","S"], widths=0.5,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[3,4,5])
-            plt.savefig(rf"Figures\FECO\{i}.png")
+            plt.savefig(rf"D:\Daten_Noah\Desktop_Dateien\Studium_Freiberg\Study\FECO\finalPlots\{i}.png")
             plt.close()  
     Stat=2
     return Stat
