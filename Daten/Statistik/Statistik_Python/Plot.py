@@ -16,7 +16,6 @@ nutzparam=["mM","mW","mTr"]
 #paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
 # Anpassung Länge wegen y-Achsengröße
 paramDict = {"Dges [%]":"Gesamtdeckung (Dges) in %","DKr [%]":"Deckung der Krautschicht (DKr) in %","DMoos [%]":"Deckung der Moosschicht (DMoos) in %","DStreu [%]":"Deckung der Streuschicht (DStreu) in %","HKr [cm]":"Höhe der Krautschicht (HKr) in cm","mT":"mittlere Temperaturzahl (mT)","mL":"mittlere Lichtzahl (mL)","mF":"mittlere Feuchtezahl (mF)","mR":"mittlere Reaktionszahl (mR)","mN":"mittlere Nährstoffzahl (mN)","mM":"mittlere Mahdverträglichkeitszahl (mM)","mW":"mittlere Weideverträglichkeitszahl (mW)","mTr":"mittlere Trittverträglichkeitszahl (mTr)", "AntThero [%]":"Anteil der Therophyten an der\n Gesamtartenzahl (AntThero) in %", "n_Thero":"n_Thero", "AntHemi [%]":"Anteil der Hemikryptophyten an der\n Gesamtartenzahl (AntHemi) in %", "n_Hemi":"n_Hemi","n_Geo":"n_Geo","n_Cha":"n_Cha","n_Pha":"n_Pha","E [%]":"Pielou-Evenness (E) in %","Hs":"Shannon-Index (Hs)","AbS":"Abundanzsumme in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten zu den Grasarten"}
-
 importantParam = ["Artzahl", "Bruch_keinGras_Gras", "mF","DMoos [%]","DStreu [%]","DKr [%]"]
 paramKorr = ["Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mF","mR","mN","mM","mW", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"]
 
@@ -295,6 +294,7 @@ def Kopfdaten(selection):
     return Stat
 
 def Shinozaki():
+    dictAnlage = {"TH": "Tannenhübel", "DS": "Davidschacht", "ZS": "Ziegelscheune 2", "Alle Anlagen":"alle Anlagen"}
     ShinoSel=str(input("M+H - j/n? "))
     S=pd.read_excel("SORTstatistics.xlsx", sheet_name="Shinozaki - Anlage", header=2, index_col=0)
     Anlagen=["TH","ZS","DS","Alle Anlagen"]
@@ -323,9 +323,15 @@ def Shinozaki():
             plt.plot(SZ["M+H"], label="M+H", marker="X")
         plt.plot(SZ["S"], label="S", marker="D")
         plt.legend()
-        plt.title(f"Shinozaki-Kurve | {i}")
+        # Bachelorarbeit
+        #plt.title(f"Shinozaki-Kurve | {i}")
+        # FECO
+        plt.title(f"{dictAnlage[i]}")
         #plt.show()
+        # Bachelorarbeit
         plt.savefig(rf"Figures\Shinozaki-{i}.png", bbox_inches="tight")
+        # FECO
+        plt.savefig(rf"D:\Daten_Noah\Desktop_Dateien\Studium_Freiberg\Study\FECO\finalPlots\Shinozaki-{i}.png", bbox_inches="tight")
         plt.close()
 
     Stat=2
@@ -856,6 +862,205 @@ def compareAnlagen():
     Stat=2
     return Stat
 
+def compareFECO():
+    # inserted into code 24.10.24 & 25.10.24 & 06.11.24
+    Stat = 0
+    w=0.6
+    K = pd.read_excel("Kopfdaten.xlsx", sheet_name="nur relevante Kopfdaten", header=1, index_col=0)
+
+    FECOparam = ["mW","Dges [%]","DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]","mL","mF","mN", "AntThero [%]", "AntHemi [%]", "Artzahl", "Bruch_keinGras_Gras"] 
+    FECOvegparam = ["DKr [%]","DMoos [%]","DStreu [%]","HKr [cm]"]
+    FECOstaparam = ["mL","mF","mN"]
+    FECOdivparam=["AntThero [%]", "AntHemi [%]","Artzahl","Bruch_keinGras_Gras"]
+    paramDictFECO = {"DKr [%]":"Deckung der Krautschicht in %","DMoos [%]":"Deckung der Moosschicht in %","DStreu [%]":"Deckung der Streuschicht in %","HKr [cm]":"Höhe der Krautschicht in cm","mL":"mittlere Lichtzahl","mF":"mittlere Feuchtezahl","mN":"mittlere Nährstoffzahl","mW":"mittlere Weideverträglichkeitszahl","AntThero [%]":"Anteil der Therophyten an der\n Gesamtartenzahl in %", "AntHemi [%]":"Anteil der Hemikryptophyten an der\n Gesamtartenzahl in %","Artzahl":"Gesamtartenzahl", "Bruch_keinGras_Gras":"Verhältnis der Nicht-Grasarten\nzu den Grasarten"}
+    
+    font = {'family' : 'sans-serif',
+        'weight' : 'regular',
+        'size'   : 13}
+
+    plt.rc('font', **font)
+    
+    for i in FECOparam:
+        KP=pd.DataFrame(K.loc[f"{i}"])
+#        print(KP)
+        print(i)
+
+        if i != "mW":
+
+            def three():  
+                DSM=[]
+                DSH=[]
+                DSS=[]
+                DSS1=[]
+                DSMList=["DSM","DSM.1","DSM.2","DSM.3","DSM.4","DSM.5","DSM.6"]
+                DSHList=["DSH","DSH.1","DSH.2","DSH.3","DSH.4","DSH.5","DSH.6"] 
+                DSSList=["DSS","DSS.1","DSS.2","DSS.3","DSS.4","DSS.5","DSS.6"]
+                for indMDS in DSMList:
+        #                print(KP.loc[f"{ind}"])
+                    DSM.append(float(KP.loc[f"{indMDS}"]))
+                for indHDS in DSHList:
+                    DSH.append(float(KP.loc[f"{indHDS}"]))
+                for indSDS in DSSList:
+                    DSS1.append(float(KP.loc[f"{indSDS}"]))
+                
+                for iK in DSS1:
+                    #print({str(iK).replace(".","",1).isdigit()})
+                    if str(iK).replace(".","",1).isdigit():
+                        DSS.append(iK)
+                
+                THM=[]
+                THH=[]
+                THS=[]
+                THMList=["THM","THM.1","THM.2","THM.3","THM.4"]
+                THHList=["THH","THH.1","THH.2","THH.3","THH.4"] 
+                THSList=["THS","THS.1","THS.2","THS.3","THS.4"]
+                for indMTH in THMList:
+        #                print(KP.loc[f"{ind}"])
+                    THM.append(float(KP.loc[f"{indMTH}"]))
+                for indHTH in THHList:
+                    THH.append(float(KP.loc[f"{indHTH}"]))
+                for indSTH in THSList:
+                    THS.append(float(KP.loc[f"{indSTH}"]))
+
+                ZSM=[]
+                ZSH=[]
+                ZSS=[]
+                ZSMList=["ZSM","ZSM.1","ZSM.2","ZSM.3"]
+                ZSHList=["ZSH","ZSH.1","ZSH.2","ZSH.3"] 
+                ZSSList=["ZSS","ZSS.1","ZSS.2","ZSS.3"]
+                for indMZS in ZSMList:
+        #                print(KP.loc[f"{ind}"])
+                    ZSM.append(float(KP.loc[f"{indMZS}"]))
+                for indHZS in ZSHList:
+                    ZSH.append(float(KP.loc[f"{indHZS}"]))
+                for indSZS in ZSSList:
+                    ZSS.append(float(KP.loc[f"{indSZS}"]))
+
+                KPMDS=pd.DataFrame(DSM)
+                KPHDS=pd.DataFrame(DSH)
+                KPSDS=pd.DataFrame(DSS)
+                KPMTH=pd.DataFrame(THM)
+                KPHTH=pd.DataFrame(THH)
+                KPSTH=pd.DataFrame(THS)
+                KPMZS=pd.DataFrame(ZSM)
+                KPHZS=pd.DataFrame(ZSH)
+                KPSZS=pd.DataFrame(ZSS)
+                
+                yMAX=max(max(KPMDS[0]),max(KPHDS[0]),max(KPSDS[0]),max(KPMTH[0]),max(KPHTH[0]), max(KPSTH[0]),max(KPMZS[0]),max(KPHZS[0]),max(KPSZS[0]))
+                yMIN=min(min(KPMDS[0]),min(KPHDS[0]),min(KPSDS[0]),min(KPMTH[0]),min(KPHTH[0]), min(KPSTH[0]),min(KPMZS[0]),min(KPHZS[0]),min(KPSZS[0]))
+            
+                if i in FECOvegparam:
+                    yADD=15-(math.ceil(yMAX)%10) 
+                    ySUB=5+(yMIN%5)
+                elif i in FECOstaparam:
+                    yADD=1.2-(yMIN%1)
+                    ySUB=0.2+(yMIN%0.2)
+                elif i in FECOdivparam:
+                    if i == "Hs":
+                        yADD=1.2-(yMIN%1)
+                        ySUB=0.2+(yMIN%0.2)
+                    elif i == "Bruch_keinGras_Gras":
+                        yADD=0
+                        ySUB=0
+                        yMAX=10
+                        yMIN=0
+                    else:
+                        yADD=15-(yMIN%10)
+                        ySUB=5+(yMIN%5)
+                
+                fig, ax1=plt.subplots() #ylim=(yMIN-ySUB,yMAX+yADD)
+                if i in FECOvegparam:
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+                elif i in FECOstaparam:
+                    ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                    ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                elif i in FECOdivparam:
+                    if i == "Hs":
+                        ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                        ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.2))
+                    elif i=="Bruch_keinGras_Gras":
+                        ax1.yaxis.set_major_locator(ticker.MultipleLocator(1))
+                        ax1.yaxis.set_minor_locator(ticker.MultipleLocator(.5))
+                    else:
+                        ax1.yaxis.set_major_locator(ticker.MultipleLocator(10))
+                        ax1.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+                ax1.set_ylabel(f"{paramDictFECO[i]}", weight="bold")
+                #font-size:13
+                ax1.set_title("          TH", loc="left")
+                ax1.set_title("ZS", loc="center")
+                ax1.set_title("DS          ", loc="right")
+                #font-size: 10
+                # ax1.set_title("             TH", loc="left")
+                # ax1.set_title("ZS", loc="center")
+                # ax1.set_title("DS             ", loc="right")
+                ax1.boxplot([THM, THH, THS], labels=["M","H","S"], widths=w,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[0,1,2])
+                ax1.axvline(x=2.5, ls="--", c=(0.6,0.6,0.6))
+                ax1.boxplot([ZSM,ZSH,ZSS], labels=["M","H","S"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[3,4,5])  
+                ax1.axvline(x=5.5, ls="--", c=(0.6,0.6,0.6))
+                ax1.boxplot([DSM,DSH,DSS], labels=["M","H","S"], widths=w, showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[6,7,8])
+                if i=="Bruch_keinGras_Gras":
+                    ax1.get_yticklabels()[2].set_color("red")
+                    # font-size: 13
+                    plt.text(-0.3, -2, "< 1: mehr Grasarten | > 1: mehr Nicht-Grasarten\n = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten")
+                    # font-size:10
+                    # plt.text(-2.5, -1.5, "< 1: mehr Grasarten | = 1: Anzahl Nicht-Grasarten = Anzahl Grasarten | > 1: mehr Nicht-Grasarten")
+                plt.savefig(rf"Figures\FECO\{i}.png", bbox_inches="tight")
+                plt.close()  
+
+            if i in FECOstaparam:
+                three()
+            elif i in FECOvegparam:
+                three()
+            elif i in FECOdivparam:
+                three()
+        elif i == "mW":
+            THM=[]
+            THH=[]
+            THS=[]
+            THMList=["THM","THM.1","THM.2","THM.3","THM.4"]
+            THHList=["THH","THH.1","THH.2","THH.3","THH.4"] 
+            THSList=["THS","THS.1","THS.2","THS.3","THS.4"]
+            for indMTH in THMList:
+    #                print(KP.loc[f"{ind}"])
+                THM.append(float(KP.loc[f"{indMTH}"]))
+            for indHTH in THHList:
+                THH.append(float(KP.loc[f"{indHTH}"]))
+            for indSTH in THSList:
+                THS.append(float(KP.loc[f"{indSTH}"]))
+
+
+            ZSM=[]
+            ZSH=[]
+            ZSS=[]
+            ZSMList=["ZSM","ZSM.1","ZSM.2","ZSM.3"]
+            ZSHList=["ZSH","ZSH.1","ZSH.2","ZSH.3"] 
+            ZSSList=["ZSS","ZSS.1","ZSS.2","ZSS.3"]
+            for indMZS in ZSMList:
+    #                print(KP.loc[f"{ind}"])
+                ZSM.append(float(KP.loc[f"{indMZS}"]))
+            for indHZS in ZSHList:
+                ZSH.append(float(KP.loc[f"{indHZS}"]))
+            for indSZS in ZSSList:
+                ZSS.append(float(KP.loc[f"{indSZS}"]))   
+     
+            fig, ax1=plt.subplots()
+            ax1.set_ylabel(f"{paramDictFECO[i]}", weight="bold")
+            #font-size: 13
+            ax1.set_title("                TH", loc="left")
+            ax1.set_title("ZS                ", loc="right")
+            #font-size:10
+            # ax1.set_title("                     TH", loc="left")
+            # ax1.set_title("ZS                      ", loc="right")
+            ax1.boxplot([THM, THH, THS], labels=["M","H","S"], widths=0.5,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[0,1,2])
+            ax1.axvline(x=2.5, ls="--", c=(0.6,0.6,0.6))
+            ax1.boxplot([ZSM, ZSH, ZSS], labels=["M","H","S"], widths=0.5,showmeans=True,medianprops={"color":"blue"}, meanprops={"marker":"+"}, positions=[3,4,5])
+            plt.savefig(rf"Figures\FECO\{i}.png")
+            plt.close()  
+    Stat=2
+    return Stat
+
+
 def merge():
     pathDS=r"XLSX\DS"
     pathTH=r"XLSX\TH"
@@ -1135,11 +1340,13 @@ if __name__ == "__main__":
             elif Task == "compare":
                 Status=0
                 while Status != 2:
-                        selection=str(input("MHS | THZSDS \n"))
+                        selection=str(input("MHS | THZSDS | FECO \n"))
                         if selection == "MHS":
                             Status=compareFTyp()
                         elif selection == "THZSDS":
                             Status=compareAnlagen()
+                        elif selection == "FECO":
+                            Status=compareFECO()
                 if Status == 2:
                     print("compare beendet")
             elif Task == "merge":
